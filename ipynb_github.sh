@@ -2,7 +2,7 @@
 
 function log_and_die { logger $1; exit 1; }
 
-DATE_STR="$(date '+%l:%m%P  %B %e, %Y')"
+DATE_STR="$(date '+%l:%M%P  %B %e, %Y')"
 
 cd /home/ipy/notebooks
 if [ "$(git status -s)" ] 
