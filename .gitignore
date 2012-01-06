@@ -1,6 +1,8 @@
 ipy_log.txt
 ipy_stderr.txt
+*.ipynb
 .ipython
+
 
 .DS_Store
 *~
