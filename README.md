@@ -10,6 +10,8 @@ If you're interested in IPython notebooks, [see here](http://ipython.org/ipython
 If you're interested in incron, see [here](http://makuro.wordpress.com/2009/10/16/less-and-incron/) and [here](http://www.cyberciti.biz/faq/linux-inotify-examples-to-replicate-directories/).
 
 -----
+Command to run: `ipython notebook --no-browser --ip='0.0.0.0' --port='3389' --logappend='ipy_log.txt' --log-level='INFO' 2>> ipy_stderr.txt`
+
 Notes on setting up the shared repo for auto commits:
  * umask 002
  * git init --shared (using ipy group)
