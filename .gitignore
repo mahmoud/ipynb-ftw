@@ -1,0 +1,8 @@
+ipy_log.txt
+.ipython
+
+.DS_Store
+*~
+*.pyc
+._*
+\#*\#
