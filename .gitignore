@@ -1,8 +1,10 @@
 ipy_log.txt
+ipy_stderr.txt
 .ipython
 
 .DS_Store
 *~
 *.pyc
 ._*
+.\#*
 \#*\#
