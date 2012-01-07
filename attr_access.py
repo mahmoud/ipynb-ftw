@@ -28,3 +28,10 @@ from timeit import timeit
 
 print setup_code
 
+# <codecell>
+
+print 'hello, ben'
+
+# <codecell>
+
+
