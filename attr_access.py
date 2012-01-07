@@ -19,12 +19,12 @@ print type(a)
 import sys
 import inspect
 import attr_access
-
+reload(attr_access)
 source = inspect.getsource(attr_access)
 setup_code = source.split('# end_setup_code')[0]
 
 
 from timeit import timeit
 
-print source
+print setup_code
 
