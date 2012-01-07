@@ -9,18 +9,22 @@ class A(object):
         return object.__getattribute__(self, name)
         
 a = A()
+
+# end_setup_code
 print a.__class__
 print type(a)
 
 # <codecell>
 
-# stop_import_stop_import
-cur_file_str = open(__file__, 'r').read()
+import sys
+import inspect
+import attr_access
+
+source = inspect.getsource(attr_access)
+setup_code = source.split('# end_setup_code')[0]
+
+
 from timeit import timeit
 
-# <codecell>
-
-import sys
-import attr_access
-inspect.getsource(sys.modules['attr_access'])
+print source
 
