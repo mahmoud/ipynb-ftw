@@ -13,6 +13,7 @@ If you're interested in incron, see [here](http://makuro.wordpress.com/2009/10/1
 Command to run: `ipython notebook --no-browser --ip='0.0.0.0' --port='3389' --logappend='ipy_log.txt' --log-level='INFO' 2>> ipy_stderr.txt`
 
 Notes on setting up the shared repo for auto commits:
- * umask 002
- * git init --shared (using ipy group)
- * find . -type d -exec chmod u+s,g+s {} \; # add guid/suid to directories (suid ignored on directories in Linux)
+
+  * umask 002
+  * git init --shared (using ipy group)
+  * find . -type d -exec chmod u+s,g+s {} \; # add guid/suid to directories (suid ignored on directories in Linux)
