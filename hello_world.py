@@ -51,14 +51,39 @@ def nonlocal_var():
         return b
     return ret
 
-def local_var():
-    c = 3
-    return 3
+def local_var(c):
+    return c
 
 import dis
 dis.dis(global_var)
 print '---'
-dis.dis(nonlocal_var)
+dis.dis(nonlocal_var())
 print '---'
 dis.dis(local_var)
+
+# <codecell>
+
+class PropObject(object):
+    @property
+    def myprop(self):
+        return 'a property'
+
+print PropObject.myprop
+print dir(PropObject.myprop)
+print ''
+
+p = PropObject()
+print dir(p)
+print p.__dict__
+print ''
+print p.myprop
+print dir(p.myprop)
+
+# <codecell>
+
+import dis
+print sorted(x for x in dis.opname if 'LOAD' in x)
+
+# <codecell>
+
 
