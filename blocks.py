@@ -88,8 +88,9 @@ print nonlocal_var().func_closure[0]
 
 # <codecell>
 
-eval(nonlocal_var.func_code)
-
+# Using the exec statement and calling eval() result in the same stack depth.
+# Neither one is itself on the stack. PDW: What function call isn't added to the stack?
+# Furthermore: eval(f.func_code) == f()
 outside = True
 def raiser():
     import sys
