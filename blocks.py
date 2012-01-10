@@ -16,5 +16,7 @@ print dir(nonlocal_var().func_closure[0])
 print nonlocal_var().func_closure[0]
 [x for x in nonlocal_var().__class__.__dict__ if 'func_' in x]
 
-nonlocal_var().func_globals
+# <codecell>
+
+eval(nonlocal_var.func_code)
 
