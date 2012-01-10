@@ -44,6 +44,44 @@ print get_cell_value_mh(cell) is somelist
 
 # <codecell>
 
+# proving http://code.activestate.com/recipes/440515-changing-a-closed-over-value-in-a-cell/?in=user-2551140
+import new, dis
+
+cell_changer_code = new.code(
+    1, 1, 2, 0,
+    ''.join([
+        chr(dis.opmap['LOAD_FAST']), '\x00\x00',
+        chr(dis.opmap['DUP_TOP']),
+        chr(dis.opmap['STORE_DEREF']), '\x00\x00',
+        chr(dis.opmap['RETURN_VALUE'])
+    ]), 
+    (), (), ('newval',), '<nowhere>', 'cell_changer', 1, '', ('c',), ()
+)
+
+def change_cell_value(cell, newval):
+    return new.function(cell_changer_code, {}, None, (), (cell,))(newval)
+
+def change_cell_value_mh(cell, newval):
+    cell.cell_contents = newval
+
+def constantly(n):
+    def return_n():
+        return n
+    return return_n
+
+f = constantly("Hi, Mom.")
+print f()
+print f.func_closure
+change_cell_value(f.func_closure[0], "Hi, Dad.")
+print f()
+try:
+    change_cell_value_mh(f.func_closure[0], "Hi again, Mom.")
+except AttributeError as e:
+    print 'No can do:',e,'(Try making a copy and returning a new function instead.)'
+
+
+# <codecell>
+
 #print nonlocal_var().func_globals
 print dir(nonlocal_var().func_closure[0])
 print nonlocal_var().func_closure[0]
