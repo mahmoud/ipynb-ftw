@@ -79,7 +79,6 @@ try:
 except AttributeError as e:
     print 'No can do:',e,'(Try making a copy and returning a new function instead.)'
 
-
 # <codecell>
 
 #print nonlocal_var().func_globals
@@ -90,4 +89,17 @@ print nonlocal_var().func_closure[0]
 # <codecell>
 
 eval(nonlocal_var.func_code)
+
+outside = True
+def raiser():
+    import sys
+    try:
+        print sys._getframe().f_locals['outside']
+    except:
+        print 'nope'
+    print sys._getframe(1).f_locals['outside']
+#let's look at the stack
+eval(raiser.func_code)
+print ''
+exec raiser.func_code
 
