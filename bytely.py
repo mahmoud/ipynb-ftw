@@ -54,17 +54,7 @@ print Instruction(12)
 
 # <codecell>
 
-
-
-_have_code = (types.MethodType, types.FunctionType, types.CodeType, types.ClassType, type)
-
-instruction = namedtuple('instruction', ('opcode','opname','arg','lineno'))
-
-
-        
-def diss(target=None):
-    pass
-
+# a programmatic dis.disco
 def dissco(co):
     try:
         code = co.co_code
@@ -125,13 +115,4 @@ import dis
 dis.dis(test_func)
 
 dissco(test_func.func_code)
-
-# <codecell>
-
-import opcode
-type(opcode.HAVE_ARGUMENT)
-opcode.HAVE_ARGUMENT
-
-# <codecell>
-
 
