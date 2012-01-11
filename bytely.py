@@ -11,11 +11,12 @@ from dis import findlabels, findlinestarts
 from opcode import *
 
 class Instruction(object):
-    def __init__(self, op=None, arg=None, lineno=None):
+    def __init__(self, op=None, oparg=None, arg=None, lineno=None):
         if op:
             self.op  = op
         else:
             self._op = None
+        self.oparg   = oparg
         self.arg     = arg
         self.lineno  = lineno
 
@@ -34,10 +35,22 @@ class Instruction(object):
     @property
     def op_name(self):
         return opname[self._op]
+    @op_name.setter
+    def op_name(self, value):
+        self.op = value # call through to other setter
+    
+    def __str__(self):
+        ret = self.op_name
+        if self.op > HAVE_ARGUMENT:
+            ret += ': '+self.arg
+        if self.lineno:
+            ret += ' (line '+self.lineno+')'
+        return ret
     
     def __repr__(self):
         return str((self.op_name, self.arg, self.lineno))
-Instruction(12)
+print Instruction(12).__repr__()
+print Instruction(12)
 
 # <codecell>
 
@@ -98,7 +111,7 @@ def dissco(co):
                     free = co.co_cellvars + co.co_freevars
                 arg = free[oparg]
                 
-        ret.append(instruction(op, op_name, arg, cur_line))
+        ret.append(Instruction(op, oparg, arg, cur_line))
     return ret
     
 def test_func(a):
@@ -108,10 +121,10 @@ def test_func(a):
         b = 0
     return b
 
-print dissco(test_func.func_code)
-
 import dis
 dis.dis(test_func)
+
+dissco(test_func.func_code)
 
 # <codecell>
 
