@@ -1,6 +1,18 @@
 # -*- coding: utf-8 -*-
 # <nbformat>2</nbformat>
 
+# <markdowncell>
+
+# Link cache:
+# 
+# * http://docs.python.org/library/inspect.html
+# * http://hg.python.org/cpython/file/2.7/Lib/opcode.py
+# * http://hg.python.org/cpython/file/2.7/Lib/dis.py
+# * http://docs.python.org/library/dis.html
+# * http://stackoverflow.com/questions/1609716/i-need-closure
+# * http://www.voidspace.org.uk/python/articles/code_blocks.shtml#using-anonymouscodeblock
+#     
+
 # <codecell>
 
 def nonlocal_var():
