@@ -4,6 +4,8 @@
 # <markdowncell>
 
 # ## Byteplay, pulled from https://github.com/serprex/byteplay
+# 
+# (see also: http://byteplay.googlecode.com/svn/trunk/byteplay.py and http://wiki.python.org/moin/ByteplayDoc for docs)
 
 # <codecell>
 
