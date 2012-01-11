@@ -104,3 +104,8 @@ eval(raiser.func_code)
 print ''
 exec raiser.func_code
 
+# <codecell>
+
+code = raiser.func_code.co_code
+len(raiser.func_code.co_code)
+
