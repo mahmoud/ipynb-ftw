@@ -3,6 +3,13 @@
 
 # <codecell>
 
+import sys
+import types
+from collections import namedtuple
+
+from dis import findlabels, findlinestarts
+from opcode import *
+
 class Instruction(object):
     def __init__(self, op=None, arg=None, lineno=None):
         if op:
@@ -17,7 +24,7 @@ class Instruction(object):
         return self._op
     @op.setter
     def op(self, value):
-        if value in opname:
+        if value in opmap.values():
             self._op = value
         elif value in opmap:
             self._op = opmap[value]
@@ -27,19 +34,14 @@ class Instruction(object):
     @property
     def op_name(self):
         return opname[self._op]
-            
-
-        
-        
+    
+    def __repr__(self):
+        return str((self.op_name, self.arg, self.lineno))
+Instruction(12)
 
 # <codecell>
 
-import sys
-import types
-from collections import namedtuple
 
-from dis import findlabels, findlinestarts
-from opcode import *
 
 _have_code = (types.MethodType, types.FunctionType, types.CodeType, types.ClassType, type)
 
