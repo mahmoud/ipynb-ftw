@@ -17,13 +17,15 @@
 
 import traceback
 
-b = 'global'
-
+a = 'global1'
+b = 'global2'
+c = 'global3'
 def nonlocal_var():
-    b = 'deref'
+    b = 'deref1'
+    c = 'deref2'
     def ret():
-        print traceback.extract_stack()
-        return b
+        c = 'local1'
+        return (a,b,c)
     return ret
 
 # <codecell>
@@ -203,14 +205,28 @@ nlv = nonlocal_var()
 bnlv = Block(nlv)
 print bnlv
 print bnlv()
-print 
-pnlv = partial(eval,AnonymousCodeBlock(nlv))
-update_wrapper(pnlv,nlv)
-print pnlv
-print pnlv()
 
 # <codecell>
 
+from types import CodeType
+def make_block_code(co, name=None):
+    if not isinstance(co, CodeType):
+        raise TypeError('make_block_code requires a code object (e.g., f.func_code)')
+    newname = name or co.co_name
+    newcode = map(ord, co.co_code)
+    names = co.co_names
+    n = len(newcode)
+    
+    return co.co_names, co.co_freevars, co.co_cellvars, co.co_varnames
+    # TODO? flag to not modify builtins?
+    
+nlv = nonlocal_var()
+print make_block_code(nlv.func_code)
+
+# <codecell>
+
+nlv = nonlocal_var()
+acb = AnonymousCodeBlock(nlv)
 nf= nonlocal_var().func_code
 print Code.from_code(nf).code
 print '---'
