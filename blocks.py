@@ -24,6 +24,8 @@ def nonlocal_var():
     b = 'deref1'
     c = 'deref2'
     def ret():
+        print 'inside',lulu
+        lulu = 99
         c = 'local1'
         return (a,b,c)
     return ret
@@ -197,6 +199,7 @@ class Block(partial):
     def __new__(cls, func, *args, **kwargs):
         newcode = AnonymousCodeBlock(func)
         self = super(Block, cls).__new__(cls, eval, newcode)
+        self.code = newcode
         return update_wrapper(self, func)
     def __init__(self, func):
         print (func, self.func, self)
@@ -205,6 +208,16 @@ nlv = nonlocal_var()
 bnlv = Block(nlv)
 print bnlv
 print bnlv()
+
+import dis
+print '----'
+def lu(f):
+    lulu = 3
+    f()
+    print lulu
+print lu(bnlv)
+dis.disco(bnlv.code)
+dis.dis(lu)
 
 # <codecell>
 
@@ -226,7 +239,7 @@ def make_block_code(co, name=None):
     newname = name or co.co_name
     newcode = map(ord, co.co_code)
     names   = list(co.co_names)
-    
+    flags   = 64 # CO_NOFREE on; CO_NEWLOCALS, CO_OPTIMIZED (and everything else) off
     i = 0
     codelen = len(newcode)
     extended_arg = 0
@@ -245,10 +258,7 @@ def make_block_code(co, name=None):
         if op >= HAVE_ARGUMENT:
             oparg = ord(code[i]) + (ord(code[i+1])<<8) + extended_arg
             
-            if op in hasname:
-                # already copied in above; we're good
-                pass
-            elif op in haslocal:
+            if op in haslocal:
                 arg = co.co_varnames[oparg]
             elif op in hasfree:
                 if free is None:
@@ -261,18 +271,33 @@ def make_block_code(co, name=None):
                 n = find_or_append(names, arg)
                 newcode[i]   = n & 0xFF
                 newcode[i+1] = (n >> 8) & 0xFF
-                print arg, n
+                #print arg, n
             
             if op == EXTENDED_ARG:
                 extended_arg = (oparg<<16)
                 raise ValueError("Blocks don't support extended args, yet.") # TODO
             i += 2
                 
-    return co.co_names, co.co_freevars, co.co_cellvars, co.co_varnames
+    #return co.co_names, co.co_freevars, co.co_cellvars, co.co_varnames
+    codestr = ''.join(map(chr,newcode))
+    return type(co)(co.co_argcount, len(names), co.co_stacksize, flags,
+                    codestr, co.co_consts, tuple(names), (), co.co_filename, newname,
+                    co.co_firstlineno, co.co_lnotab, (), ())
     # TODO? flag to not modify builtins?
-    
+
+# <codecell>
+
+from byteplay import Code
 nlv = nonlocal_var()
-print make_block_code(nlv.func_code)
+mbc = make_block_code(nlv.func_code)
+mbc_cmp = Code.from_code(mbc).code
+acb = AnonymousCodeBlock(nlv)
+acb_cmp = Code.from_code(acb).code
+
+print mbc_cmp
+print acb_cmp
+eval(acb)
+eval(mbc)
 
 # <codecell>
 
