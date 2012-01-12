@@ -18,6 +18,7 @@
 def nonlocal_var():
     b = 2
     def ret():
+        ord('b')
         return b
     return ret
 
@@ -118,6 +119,90 @@ exec raiser.func_code
 
 # <codecell>
 
-code = raiser.func_code.co_code
-len(raiser.func_code.co_code)
+import byteplay
+reload(byteplay)
+from byteplay import Code
+
+print str(Code.from_code(nonlocal_var().func_code).code)
+
+x = 3
+codestr = 'print x\nx=7'
+codeobj = compile(codestr, '<codestr>', 'exec')
+eval(codeobj)
+print x
+
+#eval(type(lambda:0)(codeobj,{},'derp',())().func_code.co_code)
+
+
+# <codecell>
+
+import inspect
+from byteplay import Code, opmap
+
+LOAD_FAST = opmap['LOAD_FAST']
+STORE_FAST = opmap['STORE_FAST']
+LOAD_NAME = opmap['LOAD_NAME']
+STORE_NAME = opmap['STORE_NAME']
+LOAD_DEREF = opmap['LOAD_DEREF']
+STORE_DEREF = opmap['STORE_DEREF']
+LOAD_GLOBAL = opmap['LOAD_GLOBAL']
+STORE_GLOBAL = opmap['STORE_GLOBAL']
+
+def AnonymousCodeBlock(function):
+    argSpec = inspect.getargspec(function)
+    if [i for x in argSpec if x is not None for i in x]:
+        raise TypeError("Function '%s' takes arguments" % function.func_name)
+
+    code = Code.from_code(function.func_code)
+    newBytecode = []
+    for opcode, arg in code.code:
+        if opcode in (LOAD_FAST, LOAD_DEREF, LOAD_GLOBAL):
+            opcode = LOAD_NAME
+        elif opcode in (STORE_FAST, STORE_DEREF, STORE_GLOBAL):
+            opcode = STORE_NAME
+        newBytecode.append((opcode, arg))
+    code.code = newBytecode
+    code.newlocals = False
+    code.freevars = ()
+    return code.to_code()
+
+#from types import CodeType
+#class CallableCode(CodeType):
+#    def __call__(self):
+#        print 'hi'
+
+b=5
+nlv = nonlocal_var()
+acb = AnonymousCodeBlock(nlv)
+#acb.__class__ = CallableCode
+#acb()
+print type(acb)
+print eval(acb)
+#type(lambda:0)(acb,{},'derp',())()
+
+# <codecell>
+
+from functools import partial, update_wrapper, WRAPPER_ASSIGNMENTS, WRAPPER_UPDATES
+p = partial(eval, acb, WRAPPER_ASSIGNMENTS, WRAPPER_UPDATES)
+update_wrapper(p, nlv).__name__
+print p.__name__
+p = partial(eval, acb, WRAPPER_ASSIGNMENTS, WRAPPER_UPDATES)
+
+from _functools import partial as cpartial
+class Partial(cpartial):
+    def __init__(self, wrapped, assigned=WRAPPER_ASSIGNMENTS, updated=WRAPPER_UPDATES):
+        pass
+
+#Partial(eval, acb)()
+
+# <codecell>
+
+nf= nonlocal_var().func_code
+print Code.from_code(nf).code
+print '---'
+print Code.from_code(acb).code
+print '---'
+print repr(nf.co_code)
+print '---'
+print repr(acb.co_code)
 
