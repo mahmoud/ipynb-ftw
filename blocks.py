@@ -208,15 +208,49 @@ print bnlv()
 
 # <codecell>
 
-from types import CodeType
+from opcode import *
 def make_block_code(co, name=None):
+    from types import CodeType
     if not isinstance(co, CodeType):
         raise TypeError('make_block_code requires a code object (e.g., f.func_code)')
+    
+    code    = co.co_code
     newname = name or co.co_name
     newcode = map(ord, co.co_code)
-    names = co.co_names
-    n = len(newcode)
+    names   = list(co.co_names)
     
+    i = 0
+    codelen = len(newcode)
+    extended_arg = 0
+    free = None
+    while i < codelen:
+        c  = code[i]
+        op = ord(c)
+        op_name = opname[op]
+        
+        i += 1
+        if op >= HAVE_ARGUMENT:
+            oparg = ord(code[i]) + (ord(code[i+1])<<8) + extended_arg
+            extended_arg = 0
+            i += 2
+            if op == EXTENDED_ARG:
+                extended_arg = (oparg<<16)
+            
+            if op in hasconst:
+                arg = co.co_consts[oparg]
+            elif op in hasname:
+                arg = co.co_names[oparg]
+            elif op in hasjrel:
+                arg = i + oparg
+            elif op in haslocal:
+                arg = co.co_varnames[oparg]
+            elif op in hascompare:
+                arg = cmp_op[oparg]
+            elif op in hasfree:
+                if free is None:
+                    free = co.co_cellvars + co.co_freevars
+                arg = free[oparg]
+                
     return co.co_names, co.co_freevars, co.co_cellvars, co.co_varnames
     # TODO? flag to not modify builtins?
     
@@ -226,8 +260,13 @@ print make_block_code(nlv.func_code)
 # <codecell>
 
 nlv = nonlocal_var()
+nf  = nlv.func_code
 acb = AnonymousCodeBlock(nlv)
-nf= nonlocal_var().func_code
+
+print Code.from_code(nf).to_code().co_names
+print '---'
+print Code.from_code(acb).to_code().co_names
+print '---'
 print Code.from_code(nf).code
 print '---'
 print Code.from_code(acb).code
