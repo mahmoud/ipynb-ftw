@@ -15,10 +15,14 @@
 
 # <codecell>
 
+import traceback
+
+b = 'global'
+
 def nonlocal_var():
-    b = 2
+    b = 'deref'
     def ret():
-        ord('b')
+        print traceback.extract_stack()
         return b
     return ret
 
@@ -120,19 +124,12 @@ exec raiser.func_code
 # <codecell>
 
 import byteplay
-reload(byteplay)
 from byteplay import Code
-
-print str(Code.from_code(nonlocal_var().func_code).code)
-
 x = 3
 codestr = 'print x\nx=7'
 codeobj = compile(codestr, '<codestr>', 'exec')
 eval(codeobj)
 print x
-
-#eval(type(lambda:0)(codeobj,{},'derp',())().func_code.co_code)
-
 
 # <codecell>
 
@@ -170,8 +167,6 @@ def AnonymousCodeBlock(function):
 #class CallableCode(CodeType):
 #    def __call__(self):
 #        print 'hi'
-
-b=5
 nlv = nonlocal_var()
 acb = AnonymousCodeBlock(nlv)
 #acb.__class__ = CallableCode
@@ -184,16 +179,35 @@ print eval(acb)
 
 from functools import partial, update_wrapper, WRAPPER_ASSIGNMENTS, WRAPPER_UPDATES
 p = partial(eval, acb, WRAPPER_ASSIGNMENTS, WRAPPER_UPDATES)
-update_wrapper(p, nlv).__name__
-print p.__name__
-p = partial(eval, acb, WRAPPER_ASSIGNMENTS, WRAPPER_UPDATES)
+update_wrapper(p, nlv)
+p = partial(eval, acb)
 
-from _functools import partial as cpartial
-class Partial(cpartial):
-    def __init__(self, wrapped, assigned=WRAPPER_ASSIGNMENTS, updated=WRAPPER_UPDATES):
-        pass
+class Block(partial):
+    """ This doesn't work. self.func is already set when __init__ gets called """
+    def __init__(self, func):
+        print self
+        print dir(self) #already has self.func = ret?? 
+        newcode = AnonymousCodeBlock(func)
+        super(Block,self).__init__(eval, newcode) #does nothing?
+        update_wrapper(self, func)
 
-#Partial(eval, acb)()
+class Block(partial):
+    def __new__(cls, func, *args, **kwargs):
+        newcode = AnonymousCodeBlock(func)
+        self = super(Block, cls).__new__(cls, eval, newcode)
+        return update_wrapper(self, func)
+    def __init__(self, func):
+        print (func, self.func, self)
+        
+nlv = nonlocal_var()
+bnlv = Block(nlv)
+print bnlv
+print bnlv()
+print 
+pnlv = partial(eval,AnonymousCodeBlock(nlv))
+update_wrapper(pnlv,nlv)
+print pnlv
+print pnlv()
 
 # <codecell>
 
