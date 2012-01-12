@@ -69,6 +69,8 @@ def dissco(co):
     n = len(code)
     i = 0
     cur_line = 0
+    oparg = None
+    arg = None
     extended_arg = 0
     free = None
     while i < n:
@@ -102,6 +104,8 @@ def dissco(co):
                 arg = free[oparg]
                 
         ret.append(Instruction(op, oparg, arg, cur_line))
+        oparg = None
+        arg = None
     return ret
     
 def test_func(a):
