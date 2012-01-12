@@ -209,6 +209,14 @@ print bnlv()
 # <codecell>
 
 from opcode import *
+
+def find_or_append(lst, val):
+    try:
+        return lst.index(val)
+    except ValueError:
+        lst.append(val)
+        return len(lst)-1
+
 def make_block_code(co, name=None):
     from types import CodeType
     if not isinstance(co, CodeType):
@@ -228,28 +236,37 @@ def make_block_code(co, name=None):
         op = ord(c)
         op_name = opname[op]
         
+        if op in (LOAD_FAST, LOAD_DEREF, LOAD_GLOBAL):
+            newcode[i] = LOAD_NAME
+        elif op in (STORE_FAST, STORE_DEREF, STORE_GLOBAL):
+            newcode[i] = STORE_NAME
+            
         i += 1
         if op >= HAVE_ARGUMENT:
             oparg = ord(code[i]) + (ord(code[i+1])<<8) + extended_arg
-            extended_arg = 0
-            i += 2
-            if op == EXTENDED_ARG:
-                extended_arg = (oparg<<16)
             
-            if op in hasconst:
-                arg = co.co_consts[oparg]
-            elif op in hasname:
-                arg = co.co_names[oparg]
-            elif op in hasjrel:
-                arg = i + oparg
+            if op in hasname:
+                # already copied in above; we're good
+                pass
             elif op in haslocal:
                 arg = co.co_varnames[oparg]
-            elif op in hascompare:
-                arg = cmp_op[oparg]
             elif op in hasfree:
                 if free is None:
                     free = co.co_cellvars + co.co_freevars
                 arg = free[oparg]
+            else:
+                arg = None
+                
+            if arg:
+                n = find_or_append(names, arg)
+                newcode[i]   = n & 0xFF
+                newcode[i+1] = (n >> 8) & 0xFF
+                print arg, n
+            
+            if op == EXTENDED_ARG:
+                extended_arg = (oparg<<16)
+                raise ValueError("Blocks don't support extended args, yet.") # TODO
+            i += 2
                 
     return co.co_names, co.co_freevars, co.co_cellvars, co.co_varnames
     # TODO? flag to not modify builtins?
