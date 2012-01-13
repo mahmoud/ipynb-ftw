@@ -17,16 +17,16 @@
 
 import traceback
 
-a = 'global1'
-b = 'global2'
-c = 'global3'
+a = 'global_a'
+b = 'global_b'
+c = 'global_c'
 def nonlocal_var():
-    b = 'deref1'
-    c = 'deref2'
+    b = 'deref_b'
+    c = 'deref_c'
     def ret():
         print 'inside',lulu
         lulu = 99
-        c = 'local1'
+        c = 'local_c'
         return (a,b,c)
     return ret
 
@@ -159,8 +159,8 @@ def AnonymousCodeBlock(function):
     for opcode, arg in code.code:
         if opcode in (LOAD_FAST, LOAD_DEREF, LOAD_GLOBAL):
             opcode = LOAD_NAME
-        elif opcode in (STORE_FAST, STORE_DEREF, STORE_GLOBAL):
-            opcode = STORE_NAME
+        elif opcode in (STORE_FAST, STORE_NAME, STORE_DEREF, STORE_GLOBAL):
+            opcode = STORE_FAST
         newBytecode.append((opcode, arg))
     code.code = newBytecode
     code.newlocals = False
@@ -175,8 +175,10 @@ nlv = nonlocal_var()
 acb = AnonymousCodeBlock(nlv)
 #acb.__class__ = CallableCode
 #acb()
+lulu = 'lulu2'
 print type(acb)
 print eval(acb)
+del lulu
 #type(lambda:0)(acb,{},'derp',())()
 
 # <codecell>
@@ -191,13 +193,13 @@ class Block(partial):
     def __init__(self, func):
         print self
         print dir(self) #already has self.func = ret?? 
-        newcode = AnonymousCodeBlock(func)
+        newcode = make_block_code(func.func_code)
         super(Block,self).__init__(eval, newcode) #does nothing?
         update_wrapper(self, func)
 
 class Block(partial):
     def __new__(cls, func, *args, **kwargs):
-        newcode = AnonymousCodeBlock(func)
+        newcode = make_block_code(func.func_code)
         self = super(Block, cls).__new__(cls, eval, newcode)
         self.code = newcode
         return update_wrapper(self, func)
@@ -230,70 +232,104 @@ def find_or_append(lst, val):
         lst.append(val)
         return len(lst)-1
 
-def make_block_code(co, name=None):
+def make_block_code(co, co_name=None):
     from types import CodeType
     if not isinstance(co, CodeType):
         raise TypeError('make_block_code requires a code object (e.g., f.func_code)')
     
     code    = co.co_code
-    newname = name or co.co_name
-    newcode = map(ord, co.co_code)
-    names   = list(co.co_names)
     flags   = 64 # CO_NOFREE on; CO_NEWLOCALS, CO_OPTIMIZED (and everything else) off
+    
+    newname  = co_name or co.co_name
+    newcode  = []
+    names    = [] # Normal, unoptimized locals
+    varnames = [] # Used to overcome optimized LOAD/STORE_FAST in enclosing scope
+    """ We don't know if the enclosing function is using LOAD_NAME or LOAD_FAST 
+after the block has been called, so we store to both to be sure. If the enclosing function isn't
+looking in FAST, then those will get cleaned up soon enough."""
+    
     i = 0
-    codelen = len(newcode)
+    codelen = len(code)
     extended_arg = 0
     free = None
+    is_store = False
     while i < codelen:
         c  = code[i]
         op = ord(c)
-        op_name = opname[op]
         
         if op in (LOAD_FAST, LOAD_DEREF, LOAD_GLOBAL):
-            newcode[i] = LOAD_NAME
+            newcode.append(LOAD_NAME)
         elif op in (STORE_FAST, STORE_DEREF, STORE_GLOBAL):
-            newcode[i] = STORE_NAME
+            newcode.append(STORE_NAME)
+            is_store = True
+        else:
+            newcode.append(op)
             
         i += 1
         if op >= HAVE_ARGUMENT:
             oparg = ord(code[i]) + (ord(code[i+1])<<8) + extended_arg
             
-            if op in haslocal:
-                arg = co.co_varnames[oparg]
+            if op in hasname:
+                name = co.co_names[oparg]
+            elif op in haslocal:
+                name = co.co_varnames[oparg]
             elif op in hasfree:
                 if free is None:
                     free = co.co_cellvars + co.co_freevars
-                arg = free[oparg]
+                name = free[oparg]
             else:
-                arg = None
+                name = None
+                newcode.append(ord(code[i]))
+                newcode.append(ord(code[i+1])<<8)
                 
-            if arg:
-                n = find_or_append(names, arg)
-                newcode[i]   = n & 0xFF
-                newcode[i+1] = (n >> 8) & 0xFF
-                #print arg, n
+            if name is not None:
+                n = find_or_append(names, name)
+                newcode.append(n & 0xFF)
+                newcode.append((n >> 8) & 0xFF)
+                if is_store:
+                    newcode.append(LOAD_NAME)
+                    newcode.append(n & 0xFF)
+                    newcode.append((n >> 8) & 0xFF)
+                    newcode.append(STORE_FAST)
+                    n = find_or_append(varnames, name)
+                    newcode.append(n & 0xFF)
+                    newcode.append((n >> 8) & 0xFF)
+                    is_store = False
             
             if op == EXTENDED_ARG:
                 extended_arg = (oparg<<16)
                 raise ValueError("Blocks don't support extended args, yet.") # TODO
+            
             i += 2
                 
     #return co.co_names, co.co_freevars, co.co_cellvars, co.co_varnames
     codestr = ''.join(map(chr,newcode))
     return type(co)(co.co_argcount, len(names), co.co_stacksize, flags,
-                    codestr, co.co_consts, tuple(names), (), co.co_filename, newname,
+                    codestr, co.co_consts, tuple(names), tuple(varnames), co.co_filename, newname,
                     co.co_firstlineno, co.co_lnotab, (), ())
     # TODO? flag to not modify builtins?
-
-# <codecell>
+    
+    
+nlv = nonlocal_var()
 
 from byteplay import Code
-nlv = nonlocal_var()
-mbc = make_block_code(nlv.func_code)
-mbc_cmp = Code.from_code(mbc).code
 acb = AnonymousCodeBlock(nlv)
-acb_cmp = Code.from_code(acb).code
+acb_code = Code.from_code(acb)
+acb_cmp = acb_code.code
 
+mbc = make_block_code(nlv.func_code)
+
+#print repr(mbc.co_code)
+#print repr(acb_code.to_code().co_code)
+from bytely import dissco
+dissco(mbc)
+mbc_cmp = Code.from_code(mbc).code
+
+print mbc.co_varnames
+print mbc.co_names
+print
+print mbc.co_stacksize
+print acb_code.to_code().co_stacksize
 print mbc_cmp
 print acb_cmp
 eval(acb)
@@ -316,4 +352,19 @@ print '---'
 print repr(nf.co_code)
 print '---'
 print repr(acb.co_code)
+
+# <codecell>
+
+def f():
+    x = 5
+
+bf = Block(f)
+    
+x = 1
+print x
+bf()
+print x
+
+from bytely import dissco
+dissco(bf.code)
 
