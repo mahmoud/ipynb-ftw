@@ -203,8 +203,6 @@ class Block(partial):
         self = super(Block, cls).__new__(cls, eval, newcode)
         self.code = newcode
         return update_wrapper(self, func)
-    def __init__(self, func):
-        print (func, self.func, self)
         
 nlv = nonlocal_var()
 bnlv = Block(nlv)
@@ -355,16 +353,29 @@ print repr(acb.co_code)
 
 # <codecell>
 
+# Test 1
 def f():
     x = 5
 
 bf = Block(f)
     
 x = 1
-print x
+print 'pre-block  x:',x
 bf()
-print x
+print 'post-block x:',x
+assert x == 5
 
-from bytely import dissco
-dissco(bf.code)
+# Test 2
+def f2():
+    print _a
+bf2 = Block(f2)
+
+def a():
+    _a = 1
+    def b():
+        print _a
+        bf2()
+    return b
+a()()
+        
 
