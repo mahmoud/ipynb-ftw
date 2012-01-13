@@ -202,6 +202,7 @@ class Block(partial):
         self.code = newcode
         return update_wrapper(self, func)
         
+lulu = 101
 nlv = nonlocal_var()
 bnlv = Block(nlv)
 print bnlv
