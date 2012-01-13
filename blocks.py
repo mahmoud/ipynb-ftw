@@ -364,6 +364,7 @@ print 'pre-block  x:',x
 bf()
 print 'post-block x:',x
 assert x == 5
+print
 
 # Test 2
 def f2():
