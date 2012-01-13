@@ -127,8 +127,6 @@ exec raiser.func_code
 
 # <codecell>
 
-import byteplay
-from byteplay import Code
 x = 3
 codestr = 'print x\nx=7'
 codeobj = compile(codestr, '<codestr>', 'exec')
