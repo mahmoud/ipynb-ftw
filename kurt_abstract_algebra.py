@@ -104,9 +104,14 @@
 # Right multiply by $b^{-1}$ : $b^{-1} = f(a^{-1})$  
 # Substitute $b = f(a)$ : $[f(a)]^{-1} = f(a^{-1})$  
 # 
-# For any isomorphism $f: G_1 \rightarrow G_2$, $[f(a)]^{-1} = f(a^{-1})$.
-# 
 # 3) If $G_1$ is a cyclic group with generator $a$, prove that $G_2$ is also a cyclic group, with generator $f(a)$.
+# 
+# $G_1$ is a cyclic group with generator $a$, $\Rightarrow$ $\forall g_1 \in G_1, a^{n} = g_1$ for some $n$.  
+# $f$ : $G_1 \rightarrow G_2$ is an isomorphism $\Rightarrow$ $\forall g_2 \in G_2, f(g_1) = g_2$ for some $g_1 \in G_1$.  
+# $\forall g_2 \in G_2, f(a^{n}) = g_2$ for some $n$.  
+# Since $f$ is linear, $f(a^{n}) = [f(a)]^{n}$.  
+# $\forall g_2 \in G_2, [f(a)]^{n} = g_2$ for some $n$.  
+# $f(a)$ is a generator of $G_2$.  
 
 # <markdowncell>
 
