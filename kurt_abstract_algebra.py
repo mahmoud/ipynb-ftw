@@ -97,6 +97,15 @@
 # 
 # 2) Prove that for each $a$ in $G_1$, $f(a^{-1}) = [f(a)]^{-1}$
 # 
+# Let $b = f(a)$.  
+# From part (1), $f(e_1) = e_2$.  
+# Since $f$ is linear, $e_2 = f(e_1) = f(aa^{-1}) = f(a^{-1})f(a) = f(a^{-1})b$.  
+# Remove the middle steps: $e_2 = f(a^{-1})b$  
+# Right multiply by $b^{-1}$ : $b^{-1} = f(a^{-1})$  
+# Substitute $b = f(a)$ : $[f(a)]^{-1} = f(a^{-1})$  
+# 
+# For any isomorphism $f: G_1 \rightarrow G_2$, $[f(a)]^{-1} = f(a^{-1})$.
+# 
 # 3) If $G_1$ is a cyclic group with generator $a$, prove that $G_2$ is also a cyclic group, with generator $f(a)$.
 
 # <markdowncell>
