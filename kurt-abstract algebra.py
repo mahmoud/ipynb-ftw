@@ -51,7 +51,7 @@
 # By definition of $f^{-1}$, $f^{-1}(c)=a$ and $f^{-1}(d)=b$.  
 # Substituting for $a$ and $b$ gets $f^{-1}(c)f^{-1}(d) = f^{-1}(cd)$.  
 # 
-# $f^{-1}$ is both linear and bijective, and is therefor an isomorphism.
+# $f^{-1}$ is both linear and bijective, $\Rightarrow$ $f^{-1}$ is an isomorphism.
 # 
 # 
 # 3) Let $G_1$, $G_2$, and $G_3$ be groups, 
@@ -59,6 +59,14 @@
 # Prove that $g \circ f: G_1 \rightarrow G_3$ is an isomorphism.
 # 
 # * Since $f$ and $g$ are bijective, $g \circ f$ is bijective.
+# * Since $f$ is linear, $f(ab) = f(a)f(b)$  
+# Take $g$ of both sides, $g(f(ab)) = g(f(a)f(b))$  
+# Since g is linear, $g(f(a)f(b)) = g(f(a))g(f(b))$  
+# $g(f(ab)) = g(f(a)f(b)) = g(f(a))g(f(b))$  
+# $(g \circ f)(ab) = (g \circ f)(a)(g \circ f)(b)$  
+# In other words, the composition of two linear transformations is a linear transformation
+# 
+# $g \circ f$ is both linear and bijective, $\Rightarrow$ $g \circ f$ is an isomorphism.
 
 # <codecell>
 
