@@ -76,4 +76,29 @@
 # 9-B: Elements which Correspond under an Isomorphism
 # -------------
 # 
+# An isomorphism $f$ from $G_1$ to $G_2$ is a one-to-one correspondence between $G_1$ and $G_2$ satisfying $f(ab)=f(a)f(b)$  
+# $f$ matches every element of $G_1$ with a corresponding element of $G_2$  
+# It is important to note that:
+# 
+# 1.  $f$ matches the neutral/identity element of $G_1$ with the neutral element of $G_2$
+# 2.  If $f$ matches an element $x$ in $G_1$ with $y$ in $G_2$ , then, neccesarily, $f$ matches $x^{-1}$ with $y^{-1}$  
+# That is, if $x \leftrightarrow y$ then $x^{-1} \leftrightarrow y^{-1}$
+# 3. $f$ matches a generator of $G_1$ with a generator of $G_2$
+# 
+# 
+# 1) if $e_1$ denotes the neutral element of $G_1$ and $e_2$ denotes the neutral element of $G_2$, prove that $f(e_1)=e_2$
+# 
+# Let $b = f(a)$.  
+# Since $f$ is linear, $f(a) = f(e_1a) = f(e_1)f(a)$.  
+# Substitute $f(a) = b$ $\Rightarrow$ $b = f(e_1)b$.  
+# Right-multiply both sides by $b^{-1}$, $e_2 = f(e_1)$.
+# 
+# For any isomorphism $f: G_1 \rightarrow G_2$, the neutral element of $G_1$ is mapped to the neutral element of $G_2$
+# 
+# 2) Prove that for each $a$ in $G_1$, $f(a^{-1}) = [f(a)]^{-1}$
+# 
+# 3) If $G_1$ is a cyclic group with generator $a$, prove that $G_2$ is also a cyclic group, with generator $f(a)$.
+
+# <markdowncell>
+
 
