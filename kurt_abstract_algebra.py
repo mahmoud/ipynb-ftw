@@ -101,4 +101,31 @@
 
 # <markdowncell>
 
+# 9-C: Isomorphism of some Finite Groups
+# -----------
+# In each of the following, $G$ and $H$ are finite groups.  Determine whether or not $G \simeq H$.  Prove your answer in either case.  
+# To find an isomorphism from $G$ to $H$ will require a little ingenuity.  
+# For example, if $G$ and $H$ are cyclic groups, it is clear that we must match a generator $a$ for $G$ with a generator $b$ of $H$;  
+# that is, $f(a) = b$.  Then $f(aa) = bb$, $f(aaa) = bbb$, and so on.
+# If $G$ and $H$ are not cyclic, we have other ways: for example,  
+# if $G$ has an element which is its own inverse, it must be matched with an element $H$ having the same property.  
+# Often, the specifics of a problem will suggest an isomorphism, if we keep our eyes open.  
+# 
+# To prove that a specific one-to-one correspondence $f: G \rightarrow H$ is an isomorphism,  
+# we may check that it transforms the table of $G$ onto the table of $H$.
+# 
+# 1) $G$ is the checkerboard game group of Chapter 3  
+# (four elements, move diagonal, move left/right, move up/down, hold still; multiplying two moves means applying them one after the other: for example L/R*U/D=Diagonal)  
+# $H$ is the group of the complex numbers  {$i, -i, 1, -1$} under multiplication.
+# 
+# 2) $G$ is the same as in part 1.  $H = \mathbb{Z}_4$
+# 
+# 3) $G$ is the group $P_2$ of subsets of a two-element set.  $H$ is as in part 1.
+# 
+# 4) $G$ is $S_3$.  $H$ is the group of matrices described on page 28 of this text.  
+# [skip if isomorphic -- requires grinding through a 5x5 table]
+# 
+# 5) $G$ is the coin group game of Chapter 3, Exercise E.  $H$ is $D_4$, the group of symmetries of the square.
+# 
+# 6) $G$ is the group of symmetries of the rectangle.  $H$ is as in part 1.
 
