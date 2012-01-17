@@ -7,20 +7,20 @@
 
 # <markdowncell>
 
-# Chapter 9
+# Chapter 9: Isomorphism
 # =========
-# 
+
+# <markdowncell>
+
 # 9-A: Isomorphism is an Equivalence Relation among Groups
 # --------------------------------------------------------
 # For all isomorphisms:
 # 
-# 1.  Every group is isomorphic to itself  \pm  \breve{a}
-# 2.  If G \simeq G then G \simeq G  \alpha
-# 3.  
+# 1.  Every group is isomorphic to itself
+# 2.  If $G_1 \simeq G_2$, then $G_2 \simeq G_1$ (isomorphism is commutative)
+# 3.  If $G_1 \simeq G_2$, and $G_2 \simeq G_3$, then $G_1 \simeq G_3$ (isomorphism is transitive)
 # 
-
-# <codecell>
-
+# 1) Let G be any group. If $\varepsilon: G \rightarrow G$ is the identity function
 
 # <codecell>
 
