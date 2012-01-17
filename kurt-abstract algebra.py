@@ -38,7 +38,8 @@
 # * the identity function is trivially bijective
 # * $\varepsilon(ab) = ab = \varepsilon(a)\varepsilon(b)$
 # 
-# The conditions of an isomorphism are satisfied by $\varepsilon$.
+# The conditions of an isomorphism are satisfied by $\varepsilon$.  
+# $G \simeq G$.
 # 
 # 2) Let $G_1$ and $G_2$ be groups, and $f: G_1 \rightarrow G_2$ be an isomorphism.
 # Show that $f^{-1}: G_2 \rightarrow G_1$ is an isomorphism.
@@ -51,7 +52,8 @@
 # By definition of $f^{-1}$, $f^{-1}(c)=a$ and $f^{-1}(d)=b$.  
 # Substituting for $a$ and $b$ gets $f^{-1}(c)f^{-1}(d) = f^{-1}(cd)$.  
 # 
-# $f^{-1}$ is both linear and bijective, $\Rightarrow$ $f^{-1}$ is an isomorphism.
+# $f^{-1}$ is both linear and bijective, $\Rightarrow$ $f^{-1}$ is an isomorphism.  
+# $G_1 \simeq G_2 \Leftrightarrow G_2 \simeq G_1$
 # 
 # 
 # 3) Let $G_1$, $G_2$, and $G_3$ be groups, 
@@ -66,8 +68,12 @@
 # $(g \circ f)(ab) = (g \circ f)(a)(g \circ f)(b)$  
 # In other words, the composition of two linear transformations is a linear transformation
 # 
-# $g \circ f$ is both linear and bijective, $\Rightarrow$ $g \circ f$ is an isomorphism.
+# $g \circ f$ is both linear and bijective, $\Rightarrow$ $g \circ f$ is an isomorphism.  
+# $G_1 \simeq G_2$ and $G_2 \simeq G_3$ $\Rightarrow$ $G_1 \simeq G_3$
 
-# <codecell>
+# <markdowncell>
 
+# 9-B: Elements which Correspond under an Isomorphism
+# -------------
+# 
 
