@@ -30,7 +30,7 @@ plot(range(1,50),[fights_per_level(x) for x in range(1,50)])
 # <codecell>
 
 from scipy import interpolate
-f = interpolate.interp1d(*sample_data, kind='cubic')
+f = interpolate.interp1d(*sample_data, kind='linear')
 xnew = range(1,50)
 ynew = [y for y in f(xnew)]
 plot(xdata, ydata)
@@ -56,8 +56,8 @@ def xp_for_even_fight(level):
     height = 2.21
     width  = 2.94
     return (100 * level)/((height * (width*level)**factor) - 3)
-print xp_per_fight(1), xp_per_fight(2)
-plot(range(1,50),[xp_per_fight(x) for x in range(1,50)])
+print xp_for_even_fight(1), xp_for_even_fight(2)
+plot(range(1,50),[xp_for_even_fight(x) for x in range(1,50)])
 
 # <codecell>
 
