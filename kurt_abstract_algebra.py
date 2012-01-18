@@ -143,7 +143,7 @@
 # 
 # 6) $G$ is the group of symmetries of the rectangle.  $H$ is as in part 1.
 # 
-# Up/Down = Reflect across x-axis
-# Left/Right = Reflect across y-axis
-# Diagonal = Rotate 180 degrees
+# Up/Down = Reflect across x-axis  
+# Left/Right = Reflect across y-axis  
+# Diagonal = Rotate 180 degrees  
 
