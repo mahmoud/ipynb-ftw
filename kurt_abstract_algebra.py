@@ -142,4 +142,8 @@
 # 5) $G$ is the coin group game of Chapter 3, Exercise E.  $H$ is $D_4$, the group of symmetries of the square.
 # 
 # 6) $G$ is the group of symmetries of the rectangle.  $H$ is as in part 1.
+# 
+# Up/Down = Reflect across x-axis
+# Left/Right = Reflect across y-axis
+# Diagonal = Rotate 180 degrees
 
