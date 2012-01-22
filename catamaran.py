@@ -89,3 +89,18 @@ print 'categories without parents:', len(subcat_links)-len(parents)
 print 'average depth:',sum([len(ps) for cat, ps in parents.items() ])/len(parents)
 print 'cycles detected:', cycles
 
+# <codecell>
+
+explicit_cats = defaultdict(set)
+all_cats = defaultdict(set)
+
+for from_link, to_link in page_links.items():
+    if to_link in subcat_links:
+        explicit_cats[to_link].add(from_link)
+        all_cats[to_link].add(from_link)
+        for parent in parents[from_link]:
+            all_cats[parent].add(from_link)
+        
+print len(explicit_cats), 'explicitly used categories.'
+print len(all_cats),'implicitly used categories.'
+
