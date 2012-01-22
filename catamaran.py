@@ -3,7 +3,7 @@
 
 # <codecell>
 
-from collections import namedtuple
+from collections import namedtuple, Counter, defaultdict
 from itertools import islice
 
 # <codecell>
@@ -43,10 +43,10 @@ print id_names.items()[:10]
 
 # <codecell>
 
-from collections import Counter
 CatLink = namedtuple('CatLink', 'from_name to_name link_type')
 
 page_links = {}
+subcat_links = {}
 for line in islice(cat_lines, 1, None):
     if not line:
         continue
@@ -66,11 +66,26 @@ for line in islice(cat_lines, 1, None):
     elif link_type == 'subcat':
         subcat_links[from_name] = to_name
     
-print cat_links[:10]    
-print page_links[:10]
+print page_links.items()[:10]
+print
+print subcat_links.items()[:10]
 
 # <codecell>
 
-for cat in subcat_links:
-    pass
+parents = defaultdict(list)
+
+cycles = 0
+for subcat,parent in subcat_links.items():
+    parents[subcat].append(parent)
+    while parent in subcat_links:
+        parent = subcat_links[parent]
+        if parent in parents[subcat]:
+            cycles += 1
+            break
+        parents[subcat].append(parent)
+        
+print 'categories with parents:', len(parents)
+print 'categories without parents:', len(subcat_links)-len(parents)
+print 'average depth:',sum([len(ps) for cat, ps in parents.items() ])/len(parents)
+print 'cycles detected:', cycles
 
