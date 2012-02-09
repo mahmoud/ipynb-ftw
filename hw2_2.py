@@ -13,7 +13,7 @@ import lxml.etree
 
 # get the raw HTML (from newegg for the first 100 laptops that are listed)
 neweggsite = lxml.html.parse( "http://www.newegg.com/Store/SubCategory.aspx?SubCategory=32&name=Laptops-Notebooks&Pagesize=100" )
-lxml.html.open_in_browser( neweggsite )
+#lxml.html.open_in_browser( neweggsite )
 
 #refers to items
 items = neweggsite.xpath( '//*[@class="itemCell featuredProduct"] | //*[@class="itemCell"]' )
