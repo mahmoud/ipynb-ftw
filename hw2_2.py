@@ -122,7 +122,9 @@ tuples = zip( price_text, averagerating_text, numberofratings_text, model_text, 
 
 # write results to a TXT file (created TXT file before running script)
 with open( "newegg.txt", "w" ) as txt_file:
-    for tuple in tuples:
-        txt_file.write( "%s \t %s \t %s \n" % tuple )
+    for t in tuples:
+        line = "%s \t %s \t %s \n" % t
+        print line
+        txt_file.write( line )
 txt_file.close()
 
