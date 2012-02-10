@@ -20,7 +20,7 @@ with open( "../refined_newegg.tsv", "r" ) as txtFile:
 tuples = [ line.strip().split( "\t" ) for line in lines ]
 
 # remove column headings
-tuples.pop(0)
+titles = tuples.pop(0)
 
 # sanity check - only work with a small example
 # tuples = tuples[ 0::1 ]
@@ -66,7 +66,7 @@ plot = matplotlib.pyplot.scatter(
         [ l.price for l in laptops ],
         [ l.reviews for l in laptops ],
         c=[ l.color for l in laptops ],
-        s=[ l.rating ** 5 for l in laptops ])
+        s=[ l.rating ** 5 + 5 for l in laptops ])
 
 matplotlib.pyplot.title( "Newegg Laptops: Correlation Between Rating, Reviewers, and Price by Brand" )
 matplotlib.pyplot.ylabel( titles[ 2 ] )
