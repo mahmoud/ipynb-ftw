@@ -66,7 +66,7 @@ plot = matplotlib.pyplot.scatter(
         [ l.price for l in laptops ],
         [ l.reviews for l in laptops ],
         c=[ l.color for l in laptops ],
-        s=[ l.ratings for l in laptops ])
+        s=[ l.rating** for l in laptops ])
 
 matplotlib.pyplot.title( "Newegg Laptops: Correlation Between Rating, Reviewers, and Price by Brand" )
 matplotlib.pyplot.ylabel( titles[ 2 ] )
