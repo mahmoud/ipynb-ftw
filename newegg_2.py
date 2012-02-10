@@ -32,22 +32,6 @@ tuples.pop()
 from collections import namedtuple
 Laptop = namedtuple('Laptop', 'price, rating, reviews, model, brand, color')
 
-laptops = []
-for t in tuples:
-    laptops.append(Laptop( price   = float(t[0]),
-                           rating  = float(t[1]), 
-                           reviews = float(t[2]),
-                           model   = t[3].strip(),
-                           brand   = t[4].strip())
-                    )
-                    
-    
-Price   = [ float( t[0] ) for t in tuples ]
-Rating  = [ float( t[1] ) for t in tuples ]
-Reviews = [ float( t[2] ) for t in tuples ]
-Model   = [ str( t[3] ) for t in tuples ]
-Brand   = [ str( t[4] ) for t in tuples ]
-
 #adds colors to scatter plot (by appending list with color value)
 DEFAULT_COLOR = "#008020"
 color_brand_map = { "ASUS": "#FF33CC",
@@ -63,8 +47,17 @@ color_brand_map = { "ASUS": "#FF33CC",
                     "Fujitsu": "#800020"
                     }
 
-colour = [ str( t[ 5 ] ) for t in tuples ]
-
+laptops = []
+for t in tuples:
+    brand = t[4].strip()
+    laptops.append(Laptop( price   = float(t[0]),
+                           rating  = float(t[1]), 
+                           reviews = float(t[2]),
+                           model   = t[3].strip(),
+                           brand   = brand,
+                           color   = color_brand_map.get(brand, DEFAULT_COLOR))
+                    )
+                    
 plot = matplotlib.pyplot.scatter(
         Price,
         Reviews,
