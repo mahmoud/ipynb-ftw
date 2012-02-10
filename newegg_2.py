@@ -16,11 +16,8 @@ lines = []
 with open( "../refined_newegg.tsv", "r" ) as txtFile:
     lines = txtFile.readlines()
 
-# remove line breaks
-lines = [ line.strip() for line in lines ]
-
 # break lines into tokens
-tuples = [ line.split( "\t" ) for line in lines ]
+tuples = [ line.strip().split( "\t" ) for line in lines ]
 
 # remove column headings
 tuples.pop(0)
