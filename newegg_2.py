@@ -23,7 +23,7 @@ lines = [ line.strip() for line in lines ]
 tuples = [ line.split( "\t" ) for line in lines ]
 
 # remove column headings
-tuples.pop()
+tuples.pop(0)
 
 # sanity check - only work with a small example
 # tuples = tuples[ 0::1 ]
@@ -58,10 +58,17 @@ for t in tuples:
                            color   = color_brand_map.get(brand, DEFAULT_COLOR))
                     )
                     
+
+print [ l.price for l in laptops ]
+print [ l.reviews for l in laptops ]
+print [ l.color for l in laptops ]
+
+# <codecell>
+
 plot = matplotlib.pyplot.scatter(
-        Price,
-        Reviews,
-        c = colour )
+        [ l.price for l in laptops ],
+        [ l.reviews for l in laptops ],
+        c=[ l.color for l in laptops ] )
 
 matplotlib.pyplot.title( "Newegg Laptops: Correlation Between Rating, Reviewers, and Price by Brand" )
 matplotlib.pyplot.ylabel( titles[ 2 ] )
