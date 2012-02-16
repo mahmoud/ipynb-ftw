@@ -21,12 +21,12 @@ songs = soundcloudsite.xpath( '//*[@class="player"]' )
 name_text = []
 for song in songs:
     name = song.xpath( '*[@class="medium mode player"]/*[@class="info-header"]/h3[0]/a' )
-    import pdb; pdb.set_trace()
-    if len( song ) == 1:
-        name_text.append( name[ 0 ].text )
-    elif len( song ) == 0:
-        name_text.append("0")
 
+    if name:
+        name_text.append( name[ 0 ].text )
+    else:
+        name_text.append("0")
+import pdb; pdb.set_trace()
 #genre of song
 genre_text = []
 for song in songs:
