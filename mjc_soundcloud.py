@@ -42,7 +42,7 @@ for song in songs:
 play_text = []
 for song in songs:
     play = song.xpath( '*[@class="medium mode player"]/*[@class="info-header"]/*[@class="meta-data"]/*[@class="stats"]/*[@class="plays first"]' )
-
+    import pdb; pdb.set_trace()
     if len( song ) == 1:
         play_text.append( play[ 0 ].text )
     elif len( song ) == 0:
