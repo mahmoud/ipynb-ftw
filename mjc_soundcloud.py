@@ -13,7 +13,6 @@ import lxml.etree
 
 # get the raw HTML (from newegg for the first 100 laptops that are listed)
 soundcloudsite = lxml.html.parse( "http://soundcloud.com/groups/top-music-players/tracks?page=1" )
-lxml.html.open_in_browser( soundcloudsite )
 
 #refers to items on soundcloud page
 songs = soundcloudsite.xpath( '//*[@class="player"]' )
