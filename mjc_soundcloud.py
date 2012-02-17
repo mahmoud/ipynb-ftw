@@ -30,11 +30,13 @@ with open('../tracks.json') as f:
 
 # <codecell>
 
+sorted(tracks, key=lambda x: int(x['playback_count']), reverse=True)[0]['permalink_url']
+
+# <codecell>
+
 import numpy
 import matplotlib.pyplot
 import json
-
-desired_attrs = ('user_id', 'title', 'genre', 'playback_count', 'favoritings_count', 'download_count')
 
 colors = {}
 
