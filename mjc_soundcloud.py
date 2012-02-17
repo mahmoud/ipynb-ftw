@@ -47,6 +47,7 @@ x_label = 'thing'
 y_label = 'otherthing'
 
 print [(x_val(t), y_val(t)) for t in tracks]
+print set(t['genre'] for t in tracks)
 
 props = dict( alpha=0.5, edgecolors = 'none')
 
