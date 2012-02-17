@@ -9,14 +9,14 @@ from pprint import pprint
 
 CLIENT_ID = '4c2d540368cee6f46196a41e6bf67255'
 
-t_json = requests.get('http://api.soundcloud.com/tracks.json?client_id='+CLIENT_ID+'&limit=10&order=hotness')
+t_json = requests.get('http://api.soundcloud.com/tracks.json?client_id='+CLIENT_ID+'&limit=100&order=hotness')
 tracks = json.loads(t_json.text)
 
 # <codecell>
 
-pprint(sorted(tracks[0].keys()))
+#pprint(sorted(tracks[0].keys()))
 
-pprint([(track['id'], track['title'], track['playback_count'], track['permalink_url']) for track in tracks])
+#pprint([(track['id'], track['title'], track['playback_count'], track['permalink_url']) for track in tracks])
 
 # <codecell>
 
@@ -43,8 +43,8 @@ y_val = lambda t: int(t['favoritings_count'])
 c_val = lambda t: colors.get(t['genre'], 'blue')
 s_val = lambda t: 50
 
-x_label = 'thing'
-y_label = 'otherthing'
+x_label = 'Plays'
+y_label = 'Downloads'
 
 print [(x_val(t), y_val(t)) for t in tracks]
 print set(t['genre'] for t in tracks)
