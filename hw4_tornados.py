@@ -67,13 +67,9 @@ map_func.drawstates(color = 'gray')
 map_func.fillcontinents(color = 'beige')
 map_func.drawmapboundary()
 
-
+x,y = map_func([ l.lons for l in torns ], [ l.lats for l in torns ])
 # Plot Tornado Data
-map_func.plot([ l.lons for l in torns ],
-        [ l.lats for l in torns ],
-        c=torns[3].color,
-        alpha = 0.5)
-
+map_func.plot(x, y,'o', c=(.270,.459,.706), alpha=.5)
 
 plt.show()
 
