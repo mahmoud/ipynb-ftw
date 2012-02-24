@@ -41,17 +41,14 @@ fujita_scale_color_map = { "0": (.000,.000,.750),
                     }
 
 torns = []
-for t in tuples[:10]:
+for t in tuples:
     fujita = t[10].strip()
-    print fujita
-    torns.append(Nader( lons   = float(t[15]),
-                        lats  = float(t[16]), 
+    torns.append(Nader( lons   = float(t[16]),
+                        lats  = float(t[15]), 
                         fujita  = fujita,
                         color   = cc.to_rgba(fujita_scale_color_map.get(fujita, (0,0,0))),
                         size   = 3
                     ))
-                    
-print torns[:5]
 
 # <codecell>
 
@@ -59,7 +56,7 @@ print torns[:5]
 map_func = Basemap(llcrnrlon= -120, llcrnrlat=25, urcrnrlon=-50, urcrnrlat=50,
               projection='tmerc', lon_0 = -95, lat_0 = 35,
               resolution = 'l')
-
+    
 # MAP!!! Draw some features of the map
 map_func.drawcoastlines(color = 'gray')
 map_func.drawcountries(color = 'gray')
@@ -67,9 +64,10 @@ map_func.drawstates(color = 'gray')
 map_func.fillcontinents(color = 'beige')
 map_func.drawmapboundary()
 
-x,y = map_func([ l.lons for l in torns ], [ l.lats for l in torns ])
-# Plot Tornado Data
-map_func.plot(x, y,'o', c=(.270,.459,.706), alpha=.5)
+lons = [ l.lons for l in torns ]
+lats = [ l.lats for l in torns ]
+x,y = map_func(lons, lats)
+map_func.plot(x, y,'o', c=(.270,.459,.706), alpha=.1)
 
 plt.show()
 
