@@ -22,8 +22,14 @@ a_t_pairs = [(t['artist']['name'], t['name']) for t in hyped_tracks]
 
 # <codecell>
 
-pprint(response)
+#pprint(response)
 pprint(hyped_tracks[0].keys())
+
+# <codecell>
+
+t_json_2 = requests.get('http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key='+api_key+'&artist='+a_t_pairs[0][0]+'&track='+a_t_pairs[0][1]+'&format=json')
+res_2 = json.loads(t_json_2.text)
+res_2
 
 # <codecell>
 
