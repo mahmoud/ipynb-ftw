@@ -27,6 +27,7 @@ pprint(hyped_tracks[0].keys())
 
 # <codecell>
 
+"""
 #get names for hyped tracks
 hyped = str([(track['name']) for track in hyped_tracks])
 
@@ -46,4 +47,5 @@ with open('../tracks.json', 'w') as f:
 
 with open('../tracks.json') as f:
     tracks = json.load(f)
+"""
 
