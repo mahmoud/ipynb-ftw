@@ -11,12 +11,19 @@ from pprint import pprint
 #api account information
 api_key = '8556b3ac919e1575cd05f49fb9d6fe08'
 secret = '9ed0596f7ad4ceae66bac1561d1b5451'
+num_tracks = 5
 
 #request authentification
-t_json_1 = requests.get('http://ws.audioscrobbler.com/2.0/?method=chart.gethypedtracks&api_key='+api_key+'&limit=2&format=json')
-hyped_tracks = json.loads(t_json_1.text)['tracks']['track']
+t_json_1 = requests.get('http://ws.audioscrobbler.com/2.0/?method=chart.gethypedtracks&api_key='+api_key+'&limit='+str(num_tracks)+'&format=json')
+response = json.loads(t_json_1.text)
+hyped_tracks = response['tracks']['track']
 
-[(t['artist']['name'], t['name']) for t in hyped_tracks]
+a_t_pairs = [(t['artist']['name'], t['name']) for t in hyped_tracks]
+
+# <codecell>
+
+pprint(response)
+pprint(hyped_tracks[0].keys())
 
 # <codecell>
 
