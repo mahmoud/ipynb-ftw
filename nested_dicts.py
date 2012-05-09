@@ -3,4 +3,10 @@
 
 # <codecell>
 
+import json
+
+with open('weirdnesteddicts.json') as di:
+    stuff = json.load(di)
+
+print keys(stuff)
 
