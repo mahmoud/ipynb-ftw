@@ -1,0 +1,20 @@
+# -*- coding: utf-8 -*-
+# <nbformat>2</nbformat>
+
+# <codecell>
+
+data = """kAAAD7nicbVNNT9tAEF0n0AINFNGPQ1uhyJeeEsc2OE5kjCygUtQPo0LSW62NvUlXON7
+Uu07Jsf-hP6DX.gsu.R9ce-2th0qddWIgBVuytDPvzbx9M-75ioK2PT5NvOPOu5N2-4QIeTqakES8J58
+zwkUZrbIxSbGgLFEqaKPLSRq8YcMhifxMLJfR-gFLUxLngM4hQNZbLavRH.Sbtk1aTUDcO8QC9.wS2oz
+IAGexqE1YLYwx5wp6Kuu121cF3xLO8ZCU0RqRIgKaDFgJPTpgoxFL2u1cWQdiPV9ZKaON8Lp3QKO7mlc
+EHZEgTAkWJFLuo0sEj.9j-hNyyzgULL1R3pPnefkKaMjzgZiOiVJCJWA8nEVwJj4V4WMIP7kRhlYRiKQ
+4nicfz5NhyDK4UZKN-iRVVtHl1p-Lv9-q318AZmWGgSusooulXx8htDkLcTDk6naVk3Nz0PFex8dex5P
+ez2njAEdRKsejN-rGTquu7xp13WwB5AFoSafBmNFEAGD7C-lr3YSPSUgHlEQanHmYakHMhiyf59qEcno
+l5rILdr3s1H5DZmmY5TEkrRPsjCTKBvr6wdk.H8XVCUmlzj1VrzfUKklCFtFkuKd2T1.VbHXfdfLFkR8
+PXDqV7J5fpREQVNdZNKcqrd1TM5Bs7aiublpN07T03aZh2A1b1-2Goy0yXAf0U-nSf1zT0G3bcrQi7Tq
+FobdamYZspZtN2zIdbRF2TZPrdItkWrsNyzb0a5qEwbWKPZkzODBs1c31FynX0e6yxpWjyE0uFk3avjU
+beEr5WRARgWnMS-h5sb7-GMM.K.-2o5iMYPCwxs9Ky.P3HwWINcA"""
+
+data = "".join(data.split("\n"))
+print data
+
