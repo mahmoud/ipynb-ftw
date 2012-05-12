@@ -7,30 +7,69 @@
 
 import requests
 import json
+from pyquery import PyQuery as pq
 
-#import pyquery
+from collections import namedtuple
 
 API_URL = "http://en.wikipedia.org/w/api.php"
 
 # <codecell>
 
-def get_dab_page_ids(date=None):
-    params = {'action': 'query', 
-              'list': 'categorymembers', 
-              'cmtitle': 'Category:Articles_with_links_needing_disambiguation_from_June_2011', 
-              'prop': 'info', 
-              'cmlimit': '500', 
-              'format': 'json'}
+class WikiException(Exception): pass
+
+def api_get(action, params=None, raise_exc=False, **kwargs):
+    all_params = {'format': 'json',
+                  'servedby': 'true'}
+    all_params.update(kwargs)
+    all_params.update(params)
+    all_params['action'] = action
+    
+    resp = requests.Response()
+    resp.results = None
     try:
-        a_list_json = requests.get(API_URL, params=params).text
+        resp = requests.get(API_URL, params=all_params)
     except Exception as e:
-        # TODO: Connection error
-        raise
+        if raise_exc:
+            raise
+        else:
+            resp.error = e
+            return resp
+    
+    mw_error = resp.headers.get('MediaWiki-API-Error')
+    if mw_error:
+        if raise_exc:
+            raise WikiException(mw_error)
+        else:
+            resp.error = mw_error
+            return resp    
+    
+    try:
+        resp.results = json.loads(resp.text)
+    except Exception as e:
+        if raise_exc:
+            raise
+        else:
+            resp.error = e
+            return resp
+    
+    return resp
+
+# <codecell>
+
+def get_category(cat_name, count=500):
+    params = {'list': 'categorymembers', 
+              'cmtitle': 'Category:'+cat_name, 
+              'prop': 'info', 
+              'cmlimit': count}
+    return api_get('query', params)
+    
+def get_dab_page_ids(date=None):
+    cat_res = get_catgory("Category:Articles_with_links_needing_disambiguation_from_June_2011")
     # TODO: Continue query?
     return [ a['pageid'] for a in 
              json.loads(a_list_json)['query']['categorymembers'] ]
 
-tmp_ids = get_dab_page_ids()
+#tmp_ids = get_dab_page_ids()
 
 # <codecell>
 
@@ -57,8 +96,6 @@ def get_article_parsed(page_id=None, title=None): #TODO: support lists
 
 # <codecell>
 
-from pyquery import PyQuery as pq
-
 def is_fixable_dab_link(parsed_page):
     # Check for redirect
     # Check for hat notes
@@ -84,7 +121,6 @@ def find_dab_links(parsed_page):
 
 # <codecell>
 
-from collections import namedtuple
 DabOption = namedtuple("DabOption", "title, text, dab_title")
 
 def get_dab_options(dab_page_title):
@@ -102,7 +138,12 @@ def get_dab_options(dab_page_title):
         ret.append(DabOption(title, text, dab_page_title))
     
     return ret
-    
+
+# <codecell>
+
+class Dabblet(object):
+    def __init__(self, ):
+        pass
 
 # <codecell>
 
