@@ -141,10 +141,10 @@ def get_dabblets(parsed_page):
         except Exception as e:
             print 'nope', e
             continue
-
+        import pdb;pdb.set_trace()
         if dab_link.tag == 'a':
             dab_title = dab_link.attrib.get('title')
-            import pdb;pdb.set_trace()
+
             context = get_context(dab_link)
             ret.append( Dabblet(dab_title, context, parsed_page, i) )
             
