@@ -142,7 +142,7 @@ def get_dabblets(parsed_page):
             print 'nope', e
             continue
         import pdb;pdb.set_trace()
-        if dab_link.tag == 'a':
+        if dab_link.is_('a'):
             dab_title = dab_link.attrib.get('title')
 
             context = get_context(dab_link)
