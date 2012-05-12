@@ -64,12 +64,12 @@ def get_category(cat_name, count=500):
     return api_get('query', params)
     
 def get_dab_page_ids(date=None):
-    cat_res = get_catgory("Category:Articles_with_links_needing_disambiguation_from_June_2011")
+    cat_res = get_category("Articles_with_links_needing_disambiguation_from_June_2011")
     # TODO: Continue query?
     return [ a['pageid'] for a in 
-             json.loads(a_list_json)['query']['categorymembers'] ]
+             cat_res.results['query']['categorymembers'] ]
 
-#tmp_ids = get_dab_page_ids()
+get_dab_page_ids()
 
 # <codecell>
 
