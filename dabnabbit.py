@@ -125,6 +125,7 @@ class Dabblet(object):
         self.source_order = source_order
         
 def get_context(dab_a):
+    
     pass
     
 # TODO: find context
@@ -136,13 +137,14 @@ def get_dabblets(parsed_page):
     for i, dlm in enumerate(dab_link_markers):
         try:
             dab_link = d(dlm).parents("sup")[0].getprevious() # TODO: remove extra d?
+            dab_link = d(dab_link)
         except Exception as e:
             print 'nope', e
             continue
 
         if dab_link.tag == 'a':
+            dab_title = dab_link.attrib.get('title')
             import pdb;pdb.set_trace()
-            dab_title = dab_link.attr('href')
             context = get_context(dab_link)
             ret.append( Dabblet(dab_title, context, parsed_page, i) )
             
