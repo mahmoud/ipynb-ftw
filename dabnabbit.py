@@ -64,6 +64,7 @@ def is_fixable_dab_link(parsed_page):
     # Check for hat notes
     pass
 
+# TODO: find context
 def find_dab_links(parsed_page):
     ret = []
     d = pq(parsed_page)
@@ -89,7 +90,7 @@ DabOption = namedtuple("DabOption", "title, text, dab_title")
 
 def get_dab_options(dab_page_title):
     ret = []
-    parsed_dab_page = get_parsed_article(title=dab_page_title)
+    parsed_dab_page = get_article_parsed(title=dab_page_title)
     
     d = pq(parsed_dab_page)
     liasons = d('li:contains(a)')
@@ -99,12 +100,12 @@ def get_dab_options(dab_page_title):
         # URL decode necessary? special character handlin'
         title = d(lia).find('a:first').attr('href').split('/')[-1] 
         text = lia.text_content().strip()
-        ret.append(DabOption(title, text, dab_title))
+        ret.append(DabOption(title, text, dab_page_title))
     
     return ret
     
-parsed_dab_page = get_article_parsed(title='Born to Lose')
 
 # <codecell>
 
+get_dab_options('Born to Lose')
 
