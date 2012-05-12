@@ -117,13 +117,23 @@ def is_fixable_dab_link(parsed_page):
     # Check for hat notes
     pass
 
+class Dabblet(object):
+    def __init__(self, dab_title, link_context, source_page, source_order):
+        self.dab_title    = dab_name
+        self.link_context = link_context
+        self.source_page  = source_page
+        self.source_order = source_order
+        
+def get_context(dab_a):
+    pass
+    
 # TODO: find context
-def find_dab_links(parsed_page):
+def get_dabblets(parsed_page):
     ret = []
     d = pq(parsed_page)
     
     dab_link_markers = d('span:contains("disambiguation needed")')
-    for dlm in dab_link_markers:
+    for i, dlm in enumerate(dab_link_markers):
         try:
             dab_link = d(dlm).parents("sup")[0].getprevious() # TODO: remove extra d?
         except Exception as e:
@@ -131,7 +141,9 @@ def find_dab_links(parsed_page):
             continue
 
         if dab_link.tag == 'a':
-            ret.append(dab_link.text)
+            dab_title = dab_link.attr('href')
+            context = get_context(dab_link)
+            ret.append( Dabblet(, parsed_page, i) )
             
     return ret
 
@@ -166,9 +178,6 @@ get_random_articles(3)
 
 # <codecell>
 
-class Dabblet(object):
-    def __init__(self):
-        pass
 
 # <codecell>
 
