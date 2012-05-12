@@ -82,7 +82,6 @@ def find_dab_links(parsed_page):
             
     return ret
 
-
 # <codecell>
 
 from collections import namedtuple
