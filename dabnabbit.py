@@ -30,7 +30,7 @@ def get_dab_page_ids(date=None):
     return [ a['pageid'] for a in 
              json.loads(a_list_json)['query']['categorymembers'] ]
 
-get_dab_page_ids()
+tmp_ids = get_dab_page_ids()
 
 # <codecell>
 
@@ -41,5 +41,15 @@ def get_article_parsed(page_id):
               'pageids':  page_id,
               'rvprop':  'content|ids', 
               'format':  'json' }
-    return
+    try:
+        a_json = requests.get(API_URL, params=params).text
+    except Exception as e:
+        raise
+    return json.loads(a_json)['query']['pages'][str(page_id)]['revisions'][0]['*']
+
+article_parsed = get_article_parsed(tmp_ids[0])
+
+# <codecell>
+
+import pyquery
 
