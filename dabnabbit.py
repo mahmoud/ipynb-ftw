@@ -71,35 +71,44 @@ def get_dab_page_ids(date=None):
     return [ a['pageid'] for a in 
              cat_res.results['query']['categorymembers'] ]
 
-get_dab_page_ids()
+tmp_ids = get_dab_page_ids()
 
 # <codecell>
 
-def get_article_parsed(page_id=None, title=None): #TODO: support lists
-    params = {'action':  'query',
-              'prop':    'revisions', 
-              'rvparse': 'true', 
-              'rvprop':  'content|ids', 
-              'format':  'json' }
+import time
+Page = namedtuple("ParsedPage", "pageid, title, revisionid, revisiontext, is_parsed, fetch_date")
+
+def get_articles(page_id=None, title=None, parsed=True): #TODO: support lists
+    ret = []
+    params = {'prop':    'revisions',  
+              'rvprop':  'content|ids' }
 
     if page_id:
-        if type(page_id)==type(list()):
-            page_id = "|".join(map(str, page_id))
-
-        params['pageids'] = page_id
+        if not isinstance(page_id, (str,unicode)):
+            try:
+                page_id = "|".join([str(p) for p in page_id])
+            except:
+                pass
+        params['pageids'] = str(page_id)
     elif title:
         params['titles'] = title
     else:
         raise Exception('You need to pass in a page id or a title.')
-        
-    try:
-        a_json = requests.get(API_URL, params=params).text
-        pages = json.loads(a_json)['query']['pages'].values()
-    except Exception as e:
-        raise
-    return [{'pageid': page['pageid'], 'title': page['title'], 'revisionid': page['revisions'][0]['revid'], 'revisiontext': page['revisions'][0]['*']} for page in pages]
+    if parsed:
+        params['rvparse'] = 'true'
+    # ret=return, req=request, resp=response, res=result(s)
+    parse_resp = api_get('query', params)
+    if parse_resp.results:
+        ret = [Page( pageid = page['pageid'],
+                     title  = page['title'],
+                     revisionid = page['revisions'][0]['revid'],
+                     revisiontext = page['revisions'][0]['*'],
+                     is_parsed = parsed,
+                     fetch_date = time.time())
+               for page in parse_resp.results['query']['pages'].values()]
+    return ret
 
-#article_parsed = get_article_parsed(tmp_ids[0])
+articles_parsed = get_articles(tmp_ids[:10])
 
 # <codecell>
 
@@ -132,7 +141,7 @@ DabOption = namedtuple("DabOption", "title, text, dab_title")
 
 def get_dab_options(dab_page_title):
     ret = []
-    parsed_dab_page = get_article_parsed(title=dab_page_title)[0]['revisiontext']
+    parsed_dab_page = get_articles(title=dab_page_title)[0].revisiontext
     
     d = pq(parsed_dab_page)
     liasons = d('li:contains(a)')
@@ -148,10 +157,12 @@ def get_dab_options(dab_page_title):
 
 # <codecell>
 
+import random
 def get_random_articles(sample=10):
-    page_range = random.sample(z.get_dab_page_ids(), sample)
-    for page in page_range:
-        pass
+    page_range = random.sample(get_dab_page_ids(), sample)
+    return get_articles(page_range)
+
+get_random_articles(3)
 
 # <codecell>
 
