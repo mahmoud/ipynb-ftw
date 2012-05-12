@@ -34,26 +34,34 @@ tmp_ids = get_dab_page_ids()
 
 # <codecell>
 
-def get_article_parsed(page_id):
+def get_article_parsed(page_id=None, title=None): #TODO: support lists
     params = {'action':  'query',
               'prop':    'revisions', 
               'rvparse': 'true', 
-              'pageids':  page_id,
               'rvprop':  'content|ids', 
               'format':  'json' }
+    if page_id:
+        params['pageids'] = page_id
+    elif title:
+        params['titles'] = title
+    else:
+        raise Exception('You need to pass in a page id or a title.')
+        
     try:
         a_json = requests.get(API_URL, params=params).text
     except Exception as e:
         raise
-    return json.loads(a_json)['query']['pages'][str(page_id)]['revisions'][0]['*']
+    return json.loads(a_json)['query']['pages'].values()[0]['revisions'][0]['*']
 
-article_parsed = get_article_parsed(tmp_ids[0])
+#article_parsed = get_article_parsed(tmp_ids[0])
 
 # <codecell>
 
 from pyquery import PyQuery as pq
 
-def is_fixable_dab_link(html_snippet):
+def is_fixable_dab_link(parsed_page):
+    # Check for redirect
+    # Check for hat notes
     pass
 
 def find_dab_links(parsed_page):
@@ -73,9 +81,30 @@ def find_dab_links(parsed_page):
             
     return ret
 
-#dabs = [find_dab_links(get_article_parsed(tmp_id)) for tmp_id in tmp_ids[:5]]
 
 # <codecell>
 
-find_dab_links(article_parsed)
+from collections import namedtuple
+DabOption = namedtuple("DabOption", "title, text, dab_title")
+
+def get_dab_options(dab_page_title):
+    ret = []
+    parsed_dab_page = get_parsed_article(title=dab_page_title)
+    
+    d = pq(parsed_dab_page)
+    liasons = d('li:contains(a)')
+
+    for lia in liasons:
+        # TODO: better heuristic than ":first" link?
+        # URL decode necessary? special character handlin'
+        title = d(lia).find('a:first').attr('href').split('/')[-1] 
+        text = lia.text_content().strip()
+        ret.append(DabOption(title, text, dab_title))
+    
+    return ret
+    
+parsed_dab_page = get_article_parsed(title='Born to Lose')
+
+# <codecell>
+
 
