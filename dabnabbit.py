@@ -7,6 +7,7 @@
 
 import requests
 import json
+import random
 from pyquery import PyQuery as pq
 
 from collections import namedtuple
@@ -66,6 +67,7 @@ def get_category(cat_name, count=500):
 def get_dab_page_ids(date=None):
     cat_res = get_category("Articles_with_links_needing_disambiguation_from_June_2011")
     # TODO: Continue query?
+    # TODO: Get subcategory of Category:Articles_with_links_needing_disambiguation
     return [ a['pageid'] for a in 
              cat_res.results['query']['categorymembers'] ]
 
@@ -79,7 +81,11 @@ def get_article_parsed(page_id=None, title=None): #TODO: support lists
               'rvparse': 'true', 
               'rvprop':  'content|ids', 
               'format':  'json' }
+
     if page_id:
+        if type(page_id)==type(list()):
+            page_id = "|".join(map(str, page_id))
+
         params['pageids'] = page_id
     elif title:
         params['titles'] = title
@@ -88,9 +94,10 @@ def get_article_parsed(page_id=None, title=None): #TODO: support lists
         
     try:
         a_json = requests.get(API_URL, params=params).text
+        pages = json.loads(a_json)['query']['pages'].values()
     except Exception as e:
         raise
-    return json.loads(a_json)['query']['pages'].values()[0]['revisions'][0]['*']
+    return [{'pageid': page['pageid'], 'title': page['title'], 'revisionid': page['revisions'][0]['revid'], 'revisiontext': page['revisions'][0]['*']} for page in pages]
 
 #article_parsed = get_article_parsed(tmp_ids[0])
 
@@ -125,7 +132,7 @@ DabOption = namedtuple("DabOption", "title, text, dab_title")
 
 def get_dab_options(dab_page_title):
     ret = []
-    parsed_dab_page = get_article_parsed(title=dab_page_title)
+    parsed_dab_page = get_article_parsed(title=dab_page_title)[0]['revisiontext']
     
     d = pq(parsed_dab_page)
     liasons = d('li:contains(a)')
@@ -141,8 +148,15 @@ def get_dab_options(dab_page_title):
 
 # <codecell>
 
+def get_random_articles(sample=10):
+    page_range = random.sample(z.get_dab_page_ids(), sample)
+    for page in page_range:
+        pass
+
+# <codecell>
+
 class Dabblet(object):
-    def __init__(self, ):
+    def __init__(self):
         pass
 
 # <codecell>
