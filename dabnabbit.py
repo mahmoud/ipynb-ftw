@@ -130,7 +130,7 @@ def get_context(dab_a):
 # TODO: find context
 def get_dabblets(parsed_page):
     ret = []
-    d = pq(parsed_page)
+    d = pq(parsed_page.revisiontext)
     
     dab_link_markers = d('span:contains("disambiguation needed")')
     for i, dlm in enumerate(dab_link_markers):
