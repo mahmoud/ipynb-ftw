@@ -108,7 +108,7 @@ def get_articles(page_id=None, title=None, parsed=True): #TODO: support lists
                for page in parse_resp.results['query']['pages'].values()]
     return ret
 
-articles_parsed = get_articles(tmp_ids[:10])
+articles_parsed = get_articles(tmp_ids[:2])
 
 # <codecell>
 
@@ -141,11 +141,14 @@ def get_dabblets(parsed_page):
             continue
 
         if dab_link.tag == 'a':
+            import pdb;pdb.set_trace()
             dab_title = dab_link.attr('href')
             context = get_context(dab_link)
-            ret.append( Dabblet(, parsed_page, i) )
+            ret.append( Dabblet(dab_title, context, parsed_page, i) )
             
     return ret
+
+get_dabblets(articles_parsed[0])
 
 # <codecell>
 
