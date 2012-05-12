@@ -51,19 +51,31 @@ article_parsed = get_article_parsed(tmp_ids[0])
 
 # <codecell>
 
+from pyquery import PyQuery as pq
+
 def is_fixable_dab_link(html_snippet):
     pass
 
 def find_dab_links(parsed_page):
-    pass
+    ret = []
+    d = pq(parsed_page)
+    
+    dab_link_markers = d('span:contains("disambiguation needed")')
+    for dlm in dab_link_markers:
+        try:
+            dab_link = d(dlm).parents("sup")[0].getprevious() # TODO: remove extra d?
+        except Exception as e:
+            print 'nope', e
+            continue
 
-from pyquery import PyQuery as pq
-d = pq(article_parsed)
+        if dab_link.tag == 'a':
+            ret.append(dab_link.text)
+            
+    return ret
 
-dab_link = d('span:contains("disambiguation needed")').parents("sup")[0].getprevious()
-if dab_link.tag != 'a':
-    # continue
-    pass
-else:
-    dab_name = dab_link.text
+#dabs = [find_dab_links(get_article_parsed(tmp_id)) for tmp_id in tmp_ids[:5]]
+
+# <codecell>
+
+find_dab_links(article_parsed)
 
