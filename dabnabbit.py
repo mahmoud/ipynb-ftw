@@ -155,7 +155,6 @@ def get_dab_options(dab_page_title):
     d = pq(dab_text)
     
     liasons = set([ d(a).parents('li')[-1] for a in d('li a') ])
-    import pdb;pdb.set_trace()
     for lia in liasons:
         # TODO: better heuristic than ":first" link?
         title = d(lia).find('a:first').attr('title') 
@@ -185,7 +184,7 @@ def get_context(dab_a):
 def get_dabblets(parsed_page):
     ret = []
     d = pq(parsed_page.revisiontext)
-    
+    d('table#toc').remove()
     dab_link_markers = d('span:contains("disambiguation needed")')
     for i, dlm in enumerate(dab_link_markers):
         try:
