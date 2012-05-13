@@ -12,8 +12,12 @@ from gevent import monkey
 
 import requests
 import json
+import time
 import random
 from pyquery import PyQuery as pq
+
+# stupid ipy notebook
+sum = __builtins__['sum']
 
 from collections import namedtuple
 
@@ -23,7 +27,7 @@ API_URL = "http://en.wikipedia.org/w/api.php"
 
 class WikiException(Exception): pass
 
-def api_get(action, params=None, raise_exc=False, **kwargs):
+def api_req(action, params=None, raise_exc=False, **kwargs):
     all_params = {'format': 'json',
                   'servedby': 'true'}
     all_params.update(kwargs)
@@ -33,7 +37,10 @@ def api_get(action, params=None, raise_exc=False, **kwargs):
     resp = requests.Response()
     resp.results = None
     try:
-        resp = requests.get(API_URL, params=all_params)
+        if action == 'edit':
+            resp = requests.post(API_URL, params=all_params)
+        else:
+            resp = requests.get(API_URL, params=all_params)
     except Exception as e:
         if raise_exc:
             raise
@@ -67,7 +74,7 @@ def get_category(cat_name, count=500):
               'cmtitle': 'Category:'+cat_name, 
               'prop': 'info', 
               'cmlimit': count}
-    return api_get('query', params)
+    return api_req('query', params)
     
 def get_dab_page_ids(date=None, count=500):
     cat_res = get_category("Articles_with_links_needing_disambiguation_from_June_2011", count)
@@ -80,10 +87,9 @@ tmp_ids = get_dab_page_ids(count=10)
 
 # <codecell>
 
-import time
 Page = namedtuple("ParsedPage", "pageid, title, revisionid, revisiontext, is_parsed, fetch_date")
 
-def get_articles(page_id=None, title=None, parsed=True, follow_redirects=False): #TODO: support lists
+def get_articles(page_id=None, title=None, parsed=True, follow_redirects=False):
     ret = []
     params = {'prop':    'revisions',  
               'rvprop':  'content|ids' }
@@ -104,7 +110,7 @@ def get_articles(page_id=None, title=None, parsed=True, follow_redirects=False):
     if follow_redirects:
         params['redirects'] = 'true'
     # ret=return, req=request, resp=response, res=result(s)
-    parse_resp = api_get('query', params)
+    parse_resp = api_req('query', params)
     if parse_resp.results:
         ret = [Page( pageid = page['pageid'],
                      title  = page['title'],
@@ -114,29 +120,6 @@ def get_articles(page_id=None, title=None, parsed=True, follow_redirects=False):
                      fetch_date = time.time())
                for page in parse_resp.results['query']['pages'].values()]
     return ret
-
-#articles_parsed = get_articles(tmp_ids[:10])
-import time
-start = time.time()
-ajobs = [gevent.spawn(get_articles, tmp_ids[i:i+10]) for i in range(0, len(tmp_ids), 10)]
-gevent.joinall(ajobs, timeout=30)
-end = time.time()
-
-# <codecell>
-
-articles_parsed = []
-for aj in ajobs:
-    if not aj.value:
-        continue
-    articles_parsed.extend([at for at in aj.value if at])
-    
-revsize = sum(len(v.revisiontext) for v in articles_parsed)
-
-print len(articles_parsed), 'articles (out of', len(tmp_ids),'requested)'
-print revsize, 'bytes'
-print end - start, 'seconds'
-
-len(tmp_ids)
 
 # <codecell>
 
@@ -153,7 +136,7 @@ def get_dab_options(dab_page_title):
     dab_text = dab_page.revisiontext
     
     d = pq(dab_text)
-    
+    d('table#toc').remove()
     liasons = set([ d(a).parents('li')[-1] for a in d('li a') ])
     for lia in liasons:
         # TODO: better heuristic than ":first" link?
@@ -184,7 +167,6 @@ def get_context(dab_a):
 def get_dabblets(parsed_page):
     ret = []
     d = pq(parsed_page.revisiontext)
-    d('table#toc').remove()
     dab_link_markers = d('span:contains("disambiguation needed")')
     for i, dlm in enumerate(dab_link_markers):
         try:
@@ -197,26 +179,22 @@ def get_dabblets(parsed_page):
             dab_title = dab_link.attr('title')
             d(dab_link).addClass('dab-link')
             context = get_context(dab_link)
-            ret.append( Dabblet(dab_title, context.outerHtml(), parsed_page, i) )
+            ret.append( Dabblet(dab_title, context.outerHtml(), d.html(), i) )
             
     return ret
 
-from itertools import chain
-dabblets = []
-
-dabblets.extend(chain(*[get_dabblets(ap) for ap in articles_parsed[:1]]))
-dabblets[0].options
-
 # <codecell>
 
-import random
 def get_random_articles(sample=10):
     page_range = random.sample(get_dab_page_ids(), sample)
     return get_articles(page_range)
 
-get_random_articles(3)
-
 # <codecell>
 
-get_dab_options('Born to Lose')
+def get_random_dabblets(count=2):
+    dabblets = []
+    page_ids = random.sample(get_dab_page_ids(count=count), count)
+    articles = get_articles(page_ids)
+    dabblets.extend(sum([get_dabblets(a) for a in articles], []))
+    return dabblets
 
