@@ -70,7 +70,7 @@ def get_category(cat_name, count=500):
     return api_get('query', params)
     
 def get_dab_page_ids(date=None, count=500):
-    cat_res = get_category("Articles_with_links_needing_disambiguation_from_June_2011")
+    cat_res = get_category("Articles_with_links_needing_disambiguation_from_June_2011", count)
     # TODO: Continue query?
     # TODO: Get subcategory of Category:Articles_with_links_needing_disambiguation
     return [ a['pageid'] for a in 
