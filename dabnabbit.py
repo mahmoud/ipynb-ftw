@@ -6,11 +6,7 @@
 import gevent
 import socket
 from gevent import monkey
-monkey.patch_all()
-urls = ['en.wikipedia.org', 'example.com']
-jobs = [gevent.spawn(socket.gethostbyname, url) for url in urls]
-gevent.joinall(jobs, timeout=2)
-[job.value for job in jobs]
+#monkey.patch_all()
 
 # <codecell>
 
@@ -73,14 +69,14 @@ def get_category(cat_name, count=500):
               'cmlimit': count}
     return api_get('query', params)
     
-def get_dab_page_ids(date=None):
+def get_dab_page_ids(date=None, count=500):
     cat_res = get_category("Articles_with_links_needing_disambiguation_from_June_2011")
     # TODO: Continue query?
     # TODO: Get subcategory of Category:Articles_with_links_needing_disambiguation
     return [ a['pageid'] for a in 
              cat_res.results['query']['categorymembers'] ]
 
-tmp_ids = get_dab_page_ids()
+tmp_ids = get_dab_page_ids(count=10)
 
 # <codecell>
 
