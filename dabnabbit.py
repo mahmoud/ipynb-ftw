@@ -120,9 +120,11 @@ def is_fixable_dab_link(parsed_page):
 class Dabblet(object):
     def __init__(self, dab_title, link_context, source_page, source_order):
         self.dab_title    = dab_title
-        self.link_context = link_context
+        self.context = link_context
         self.source_page  = source_page
         self.source_order = source_order
+        
+        self.options = get_dab_options(dab_title)
         
 def get_context(dab_a):
     d = dab_a(dab_a.parents()[0])
@@ -131,9 +133,8 @@ def get_context(dab_a):
     chosen_context = cand_contexts[-1]
     d(chosen_context).addClass('dab-context')
     # add upperbound/wrapping div
-    return chosen_context
+    return d(chosen_context)
     
-# TODO: find context
 def get_dabblets(parsed_page):
     ret = []
     d = pq(parsed_page.revisiontext)
@@ -147,14 +148,16 @@ def get_dabblets(parsed_page):
             print 'nope', e
             continue
         if dab_link.is_('a'):
-            dab_title = dab_link.attrib.get('title')
-            d(dab_a).addClass('dab-link')
+            dab_title = dab_link.attr('title')
+            d(dab_link).addClass('dab-link')
             context = get_context(dab_link)
             ret.append( Dabblet(dab_title, context.outerHtml(), parsed_page, i) )
             
     return ret
 
-get_dabblets(articles_parsed[0])
+dablets = get_dabblets(articles_parsed[0])
+mydab = dablets[0]
+mydab.context
 
 # <codecell>
 
