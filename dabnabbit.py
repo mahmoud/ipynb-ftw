@@ -4,8 +4,9 @@
 # <codecell>
 
 import gevent
-
-from gevent import socket
+import socket
+from gevent import monkey
+monkey.patch_all()
 urls = ['en.wikipedia.org', 'example.com']
 jobs = [gevent.spawn(socket.gethostbyname, url) for url in urls]
 gevent.joinall(jobs, timeout=2)
@@ -119,12 +120,22 @@ def get_articles(page_id=None, title=None, parsed=True, follow_redirects=False):
     return ret
 
 #articles_parsed = get_articles(tmp_ids[:10])
-ajobs = [gevent.spawn(get_articles, tmp_ids[i:i+10]) for i in range(0, 20, 10)]
+import time
+start = time.time()
+ajobs = [gevent.spawn(get_articles, tmp_ids[i:i+10]) for i in range(0, 30, 10)]
 gevent.joinall(ajobs, timeout=30)
+end = time.time()
 
 # <codecell>
 
-vals = [aj.value for aj in ajobs]
+vals = []
+vals.extend(at for at in aj.value for aj in ajobs)
+import sys
+revsize = sum(len(v.revisiontext) for v in vals)
+
+print len(vals), 'articles'
+print revsize, 'bytes'
+print end - start, 'seconds'
 
 # <codecell>
 
