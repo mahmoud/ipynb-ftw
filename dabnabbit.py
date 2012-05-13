@@ -122,21 +122,23 @@ def get_articles(page_id=None, title=None, parsed=True, follow_redirects=False):
 #articles_parsed = get_articles(tmp_ids[:10])
 import time
 start = time.time()
-ajobs = [gevent.spawn(get_articles, tmp_ids[i:i+10]) for i in range(0, 30, 10)]
+ajobs = [gevent.spawn(get_articles, tmp_ids[i:i+10]) for i in range(0, len(tmp_ids), 10)]
 gevent.joinall(ajobs, timeout=30)
 end = time.time()
 
 # <codecell>
 
-vals = []
+articles_parsed = []
 for aj in ajobs:
-    vals.extend([at for at in aj.value])
-
-revsize = sum(len(v.revisiontext) for v in vals)
+    articles_parsed.extend([at for at in aj.value if at])
+    
+revsize = sum(len(v.revisiontext) for v in articles_parsed)
 
 print len(vals), 'articles'
 print revsize, 'bytes'
 print end - start, 'seconds'
+
+len(tmp_ids)
 
 # <codecell>
 
@@ -205,7 +207,7 @@ def get_dabblets(parsed_page):
 from itertools import chain
 dabblets = []
 
-dabblets.extend(chain(*[get_dabblets(ap) for ap in articles_parsed]))
+#dabblets.extend(chain(*[get_dabblets(ap) for ap in articles_parsed]))
 
 # <codecell>
 
