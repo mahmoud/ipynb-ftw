@@ -123,18 +123,18 @@ DabOption = namedtuple("DabOption", "title, text, dab_title")
 
 def get_dab_options(dab_page_title):
     ret = []
-    parsed_dab_page = get_articles(title=dab_page_title, follow_redirects=True)[0].revisiontext
+    dab_page = get_articles(title=dab_page_title, follow_redirects=True)[0].revisiontext
+    dab_text = parsed_dab_page.revisiontext
     
-    d = pq(parsed_dab_page)
+    d = pq(dab_text)
     
     liasons = set([ d(a).parents('li')[-1] for a in d('li a') ])
     
     for lia in liasons:
         # TODO: better heuristic than ":first" link?
-        # URL decode necessary? special character handlin'
         title = d(lia).find('a:first').attr('title') 
         text = lia.text_content().strip()
-        ret.append(DabOption(title, text, dab_page_title))
+        ret.append(DabOption(title, text, parsed_dab_page.title))
     
     return ret
 
