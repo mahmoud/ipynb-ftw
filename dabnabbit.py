@@ -123,8 +123,8 @@ DabOption = namedtuple("DabOption", "title, text, dab_title")
 
 def get_dab_options(dab_page_title):
     ret = []
-    dab_page = get_articles(title=dab_page_title, follow_redirects=True)[0].revisiontext
-    dab_text = parsed_dab_page.revisiontext
+    dab_page = get_articles(title=dab_page_title, follow_redirects=True)[0]
+    dab_text = dab_page.revisiontext
     
     d = pq(dab_text)
     
@@ -134,7 +134,7 @@ def get_dab_options(dab_page_title):
         # TODO: better heuristic than ":first" link?
         title = d(lia).find('a:first').attr('title') 
         text = lia.text_content().strip()
-        ret.append(DabOption(title, text, parsed_dab_page.title))
+        ret.append(DabOption(title, text, dab_page.title))
     
     return ret
 
