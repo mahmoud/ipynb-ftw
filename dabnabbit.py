@@ -130,11 +130,13 @@ end = time.time()
 
 articles_parsed = []
 for aj in ajobs:
+    if not aj.value:
+        continue
     articles_parsed.extend([at for at in aj.value if at])
     
 revsize = sum(len(v.revisiontext) for v in articles_parsed)
 
-print len(articles_parsed), 'articles'
+print len(articles_parsed), 'articles (out of', len(tmp_ids),'requested)'
 print revsize, 'bytes'
 print end - start, 'seconds'
 
