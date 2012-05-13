@@ -83,8 +83,6 @@ def get_dab_page_ids(date=None, count=500):
     return [ a['pageid'] for a in 
              cat_res.results['query']['categorymembers'] ]
 
-tmp_ids = get_dab_page_ids(count=10)
-
 # <codecell>
 
 Page = namedtuple("ParsedPage", "pageid, title, revisionid, revisiontext, is_parsed, fetch_date")
@@ -182,12 +180,6 @@ def get_dabblets(parsed_page):
             ret.append( Dabblet(dab_title, context.outerHtml(), d.html(), i) )
             
     return ret
-
-# <codecell>
-
-def get_random_articles(sample=10):
-    page_range = random.sample(get_dab_page_ids(), sample)
-    return get_articles(page_range)
 
 # <codecell>
 
