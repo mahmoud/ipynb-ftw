@@ -119,6 +119,24 @@ def is_fixable_dab_link(parsed_page):
     # Check for hat notes
     pass
 
+DabOption = namedtuple("DabOption", "title, text, dab_title")
+
+def get_dab_options(dab_page_title):
+    ret = []
+    parsed_dab_page = get_articles(title=dab_page_title, follow_redirects=True)[0].revisiontext
+    
+    d = pq(parsed_dab_page)
+    liasons = d('li:contains(a)')
+    import pdb;pdb.set_trace()
+    for lia in liasons:
+        # TODO: better heuristic than ":first" link?
+        # URL decode necessary? special character handlin'
+        title = d(lia).find('a:first').attr('title') 
+        text = lia.text_content().strip()
+        ret.append(DabOption(title, text, dab_page_title))
+    
+    return ret
+
 class Dabblet(object):
     def __init__(self, dab_title, link_context, source_page, source_order):
         self.dab_title    = dab_title
@@ -168,23 +186,6 @@ dabblets[0].options
 
 # <codecell>
 
-DabOption = namedtuple("DabOption", "title, text, dab_title")
-
-def get_dab_options(dab_page_title):
-    ret = []
-    parsed_dab_page = get_articles(title=dab_page_title, follow_redirects=True)[0].revisiontext
-    
-    d = pq(parsed_dab_page)
-    liasons = d('li:contains(a)')
-    import pdb;pdb.set_trace()
-    for lia in liasons:
-        # TODO: better heuristic than ":first" link?
-        # URL decode necessary? special character handlin'
-        title = d(lia).find('a:first').attr('title') 
-        text = lia.text_content().strip()
-        ret.append(DabOption(title, text, dab_page_title))
-    
-    return ret
 
 # <codecell>
 
