@@ -108,7 +108,7 @@ def get_articles(page_id=None, title=None, parsed=True): #TODO: support lists
                for page in parse_resp.results['query']['pages'].values()]
     return ret
 
-articles_parsed = get_articles(tmp_ids[:2])
+articles_parsed = get_articles(tmp_ids[:10])
 
 # <codecell>
 
@@ -129,7 +129,7 @@ class Dabblet(object):
 def get_context(dab_a):
     d = dab_a(dab_a.parents()[0])
     link_parents = dab_a.parents()
-    cand_contexts = [ p for p in link_parents if len(p.text_content().split()) > 30 ]
+    cand_contexts = [ p for p in link_parents if p.text_content() and len(p.text_content().split()) > 30 ]
     chosen_context = cand_contexts[-1]
     d(chosen_context).addClass('dab-context')
     # add upperbound/wrapping div
@@ -155,7 +155,10 @@ def get_dabblets(parsed_page):
             
     return ret
 
-dablets = get_dabblets(articles_parsed[0])
+from itertools import chain
+dabblets = []
+
+dabblets.extend(chain(*[get_dabblets(ap) for ap in articles_parsed]))
 mydab = dablets[0]
 mydab.context
 
