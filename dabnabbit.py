@@ -155,7 +155,7 @@ def get_dab_options(dab_page_title):
     d = pq(dab_text)
     
     liasons = set([ d(a).parents('li')[-1] for a in d('li a') ])
-    
+    import pdb;pdb.set_trace()
     for lia in liasons:
         # TODO: better heuristic than ":first" link?
         title = d(lia).find('a:first').attr('title') 
@@ -167,7 +167,7 @@ def get_dab_options(dab_page_title):
 class Dabblet(object):
     def __init__(self, dab_title, link_context, source_page, source_order):
         self.dab_title    = dab_title
-        self.context = link_context
+        self.context      = link_context
         self.source_page  = source_page
         self.source_order = source_order
         
@@ -205,14 +205,8 @@ def get_dabblets(parsed_page):
 from itertools import chain
 dabblets = []
 
-#dabblets.extend(chain(*[get_dabblets(ap) for ap in articles_parsed]))
-
-# <codecell>
-
+dabblets.extend(chain(*[get_dabblets(ap) for ap in articles_parsed[:1]]))
 dabblets[0].options
-
-# <codecell>
-
 
 # <codecell>
 
