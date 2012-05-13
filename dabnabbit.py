@@ -134,7 +134,7 @@ for aj in ajobs:
     
 revsize = sum(len(v.revisiontext) for v in articles_parsed)
 
-print len(vals), 'articles'
+print len(articles_parsed), 'articles'
 print revsize, 'bytes'
 print end - start, 'seconds'
 
