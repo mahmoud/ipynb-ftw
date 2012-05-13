@@ -13,8 +13,6 @@ gevent.joinall(jobs, timeout=2)
 
 # <codecell>
 
-
-
 import requests
 import json
 import random
@@ -120,7 +118,13 @@ def get_articles(page_id=None, title=None, parsed=True, follow_redirects=False):
                for page in parse_resp.results['query']['pages'].values()]
     return ret
 
-articles_parsed = get_articles(tmp_ids[:10])
+#articles_parsed = get_articles(tmp_ids[:10])
+ajobs = [gevent.spawn(get_articles, tmp_ids[i:i+10]) for i in range(0, 20, 10)]
+gevent.joinall(ajobs, timeout=30)
+
+# <codecell>
+
+vals = [aj.value for aj in ajobs]
 
 # <codecell>
 
