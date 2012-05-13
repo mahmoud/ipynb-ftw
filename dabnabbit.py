@@ -129,8 +129,9 @@ end = time.time()
 # <codecell>
 
 vals = []
-vals.extend(at for at in aj.value for aj in ajobs)
-import sys
+for aj in ajobs:
+    vals.extend([at for at in aj.value])
+
 revsize = sum(len(v.revisiontext) for v in vals)
 
 print len(vals), 'articles'
