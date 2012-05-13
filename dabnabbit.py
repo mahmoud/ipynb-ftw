@@ -78,7 +78,7 @@ tmp_ids = get_dab_page_ids()
 import time
 Page = namedtuple("ParsedPage", "pageid, title, revisionid, revisiontext, is_parsed, fetch_date")
 
-def get_articles(page_id=None, title=None, parsed=True): #TODO: support lists
+def get_articles(page_id=None, title=None, parsed=True, follow_redirects=False): #TODO: support lists
     ret = []
     params = {'prop':    'revisions',  
               'rvprop':  'content|ids' }
@@ -96,6 +96,8 @@ def get_articles(page_id=None, title=None, parsed=True): #TODO: support lists
         raise Exception('You need to pass in a page id or a title.')
     if parsed:
         params['rvparse'] = 'true'
+    if follow_redirects:
+        params['redirects'] = 'true'
     # ret=return, req=request, resp=response, res=result(s)
     parse_resp = api_get('query', params)
     if parse_resp.results:
@@ -159,8 +161,10 @@ from itertools import chain
 dabblets = []
 
 dabblets.extend(chain(*[get_dabblets(ap) for ap in articles_parsed]))
-mydab = dablets[0]
-mydab.context
+
+# <codecell>
+
+dabblets[0].options
 
 # <codecell>
 
@@ -168,15 +172,15 @@ DabOption = namedtuple("DabOption", "title, text, dab_title")
 
 def get_dab_options(dab_page_title):
     ret = []
-    parsed_dab_page = get_articles(title=dab_page_title)[0].revisiontext
+    parsed_dab_page = get_articles(title=dab_page_title, follow_redirects=True)[0].revisiontext
     
     d = pq(parsed_dab_page)
     liasons = d('li:contains(a)')
-
+    import pdb;pdb.set_trace()
     for lia in liasons:
         # TODO: better heuristic than ":first" link?
         # URL decode necessary? special character handlin'
-        title = d(lia).find('a:first').attr('href').split('/')[-1] 
+        title = d(lia).find('a:first').attr('title') 
         text = lia.text_content().strip()
         ret.append(DabOption(title, text, dab_page_title))
     
