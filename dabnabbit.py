@@ -126,8 +126,9 @@ def get_dab_options(dab_page_title):
     parsed_dab_page = get_articles(title=dab_page_title, follow_redirects=True)[0].revisiontext
     
     d = pq(parsed_dab_page)
-    liasons = d('li:contains(a)')
-    import pdb;pdb.set_trace()
+    
+    liasons = set([ a.parents('li')[-1] for a in d('li a') ])
+    
     for lia in liasons:
         # TODO: better heuristic than ":first" link?
         # URL decode necessary? special character handlin'
