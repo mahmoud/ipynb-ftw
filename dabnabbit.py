@@ -119,14 +119,19 @@ def is_fixable_dab_link(parsed_page):
 
 class Dabblet(object):
     def __init__(self, dab_title, link_context, source_page, source_order):
-        self.dab_title    = dab_name
+        self.dab_title    = dab_title
         self.link_context = link_context
         self.source_page  = source_page
         self.source_order = source_order
         
 def get_context(dab_a):
-    
-    pass
+    d = dab_a(dab_a.parents()[0])
+    link_parents = dab_a.parents()
+    cand_contexts = [ p for p in link_parents if len(p.text_content().split()) > 30 ]
+    chosen_context = cand_contexts[-1]
+    d(chosen_context).addClass('dab-context')
+    # add upperbound/wrapping div
+    return chosen_context
     
 # TODO: find context
 def get_dabblets(parsed_page):
@@ -141,12 +146,11 @@ def get_dabblets(parsed_page):
         except Exception as e:
             print 'nope', e
             continue
-        import pdb;pdb.set_trace()
         if dab_link.is_('a'):
             dab_title = dab_link.attrib.get('title')
-
+            d(dab_a).addClass('dab-link')
             context = get_context(dab_link)
-            ret.append( Dabblet(dab_title, context, parsed_page, i) )
+            ret.append( Dabblet(dab_title, context.outerHtml(), parsed_page, i) )
             
     return ret
 
@@ -180,9 +184,6 @@ def get_random_articles(sample=10):
     return get_articles(page_range)
 
 get_random_articles(3)
-
-# <codecell>
-
 
 # <codecell>
 
