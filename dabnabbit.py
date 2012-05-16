@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# <nbformat>2</nbformat>
+# <nbformat>3</nbformat>
 
 # <codecell>
 
@@ -189,4 +189,6 @@ def get_random_dabblets(count=2):
     articles = get_articles(page_ids)
     dabblets.extend(sum([get_dabblets(a) for a in articles], []))
     return dabblets
+
+get_random_dabblets()
 
