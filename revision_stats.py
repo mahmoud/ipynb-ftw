@@ -7,7 +7,7 @@ import requests, json
 from pprint import pprint
 
 article_title = 'Coffee'
-rev_json = requests.get('http://ortellius.toolserver.org:8089/revisions/'+article_title)
+rev_json = requests.get('http://ortelius.toolserver.org:8089/revisions/'+article_title)
 revs = json.loads(rev_json.text)
 
 # <codecell>
