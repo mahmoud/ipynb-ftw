@@ -63,12 +63,35 @@ def edits_by_day(edits, cutoff=DEFAULT_CUTOFF):
 
 # <codecell>
 
-ed_data_unsorted = edits_by_day(revs)
+def get_editor_bytes(revs):
+    editors = {}
+    diff_sizes = [(b['rev_user_text'], abs(b['rev_len']-a['rev_len'])) 
+                    for a,b in 
+                    zip(revs, revs[1:]) 
+                  ]
+    for editor, size in diff_sizes:
+        tot_size, count = editors.get(editor, (0,0))
+        editors[editor] = ((tot_size + size), (count + 1))
+    return editors
+
+sorted(get_editor_bytes(revs).items(), key=lambda x: x[1], reverse=True)
+        
+
+# <codecell>
+
+ed_data_unsorted = edits_by_day(revs, 2005)
 ed_data = sorted(ed_data_unsorted, key=lambda x: x[1], reverse=True)
 ed_counts = [e[1] for e in ed_data]
-print stats.kurtosis(ed_counts, fisher=False)
-print stats.skew(ed_counts)
 
+def print_stats(datums):
+    print 'Mean:', stats.tmean(datums)
+    print 'Median:', stats.cmedian(datums)
+    print 'Std Dev:', stats.tstd(datums)
+    print 'Variation:', stats.variation(datums)
+    print 'Kurtosis:', stats.kurtosis(datums, fisher=False)
+    print 'Skewness:', stats.skew(datums)
+
+print_stats(ed_counts)
 plot(ed_counts)
 
 # <codecell>
