@@ -63,19 +63,47 @@ def edits_by_day(edits, cutoff=DEFAULT_CUTOFF):
 
 # <codecell>
 
+REVERT_LOOKAHEAD = 1
+REVERT_THRESHOLD = 0
+from __builtin__ import sum, any
+def get_diff_sizes(revs, absolute=False):
+    if absolute:
+        return [(b['rev_user_text'], abs(b['rev_len']-a['rev_len'])) 
+                        for a,b in 
+                        zip(revs, revs[1:])]
+    else:
+        return [(b['rev_user_text'], b['rev_len']-a['rev_len'])
+                        for a,b in 
+                        zip(revs, revs[1:])]
+         
 def get_editor_bytes(revs):
     editors = {}
-    diff_sizes = [(b['rev_user_text'], abs(b['rev_len']-a['rev_len'])) 
-                    for a,b in 
-                    zip(revs, revs[1:]) 
-                  ]
+    reverted_revs = []
+    diff_sizes = get_diff_sizes(revs, absolute=True)
+        
     for editor, size in diff_sizes:
         tot_size, count = editors.get(editor, (0,0))
         editors[editor] = ((tot_size + size), (count + 1))
     return editors
 
+def get_reverted_revs(revs):
+    reverted_revs = []
+    diff_sizes = get_diff_sizes(revs)
+    for rev_num, (editor, size) in enumerate(diff_sizes):
+        rev_range = [x[1] for x in diff_sizes[rev_num:rev_num+REVERT_LOOKAHEAD+1]]
+        if any([ r != 0 for r in rev_range ]) and sum(rev_range) == REVERT_THRESHOLD:
+            reverted_revs.append(rev_num)
+    return reverted_revs
+    
+print 'User, (bytes, edits)'
 sorted(get_editor_bytes(revs).items(), key=lambda x: x[1], reverse=True)
-        
+
+reverted_revs = get_reverted_revs(revs)
+len(reverted_revs)
+
+# <codecell>
+
+revs[9:12]
 
 # <codecell>
 
