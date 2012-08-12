@@ -63,6 +63,17 @@ def edits_by_day(edits, cutoff=DEFAULT_CUTOFF):
 
 # <codecell>
 
+def get_reverted_by_summary(revs):
+    reverted_revs = []
+    for rev in revs:
+        if 'revert' in rev['rev_comment'].lower():
+            reverted_revs.append(rev['rev_comment'])
+    return reverted_revs
+
+get_reverted_by_summary(revs)
+
+# <codecell>
+
 REVERT_LOOKAHEAD = 1
 REVERT_THRESHOLD = 0
 from __builtin__ import sum, any
