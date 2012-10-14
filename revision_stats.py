@@ -65,12 +65,23 @@ def edits_by_day(edits, cutoff=DEFAULT_CUTOFF):
 
 def get_reverted_by_summary(revs):
     reverted_revs = []
-    for rev in revs:
+    for revnum,rev in enumerate(revs):
         if 'revert' in rev['rev_comment'].lower():
-            reverted_revs.append(rev['rev_comment'])
+            rev_range_end = revnum
+            for i in range(revnum - 1, revnum - 5, -1):
+                if rev['rev_sha1'] == revs[i]['rev_sha1']:
+                    rev_range_start = i
+                    reverted_revs.append((rev_range_start, rev_range_end, rev_range_end - rev_range_start))
+                    break
     return reverted_revs
 
-get_reverted_by_summary(revs)
+rev_by_sum_range = get_reverted_by_summary(revs)
+
+# <codecell>
+
+#plot([x for x in range(0, len(rev_by_sum_range))], [y[2] for y in rev_by_sum_range])
+#rev_by_sum_range[0]
+max([y[2] for y in rev_by_sum_range])
 
 # <codecell>
 
