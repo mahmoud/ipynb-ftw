@@ -107,7 +107,17 @@ ax.set_ylim(0,6)
 ax.set_xlabel("x")
 ax.set_ylabel("PDF")
 
-(b_mean, b_stddev, b_skew, b_kurt) = b_stats
+(b_mean, b_var, b_skew, b_kurt) = b_stats
+b_real_kurt = b_kurt + 3
+
+_, p_value = stats.kstest(ga_de_scores, 'beta', shape_params)
+
+print p_value
+
+# <codecell>
+
+b_mean, b_var, b_skew, b_real_kurt
+b_mean + min(ga_de_scores)
 
 # <codecell>
 
