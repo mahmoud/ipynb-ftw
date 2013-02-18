@@ -3,12 +3,9 @@
 
 # <codecell>
 
-from functools import partial
-from types import MethodType
-
 from itertools import chain
 
-
+#  a few utils
 def mro_items(obj_type):
     # handle slots?
     return chain.from_iterable([ct.__dict__.iteritems()
@@ -22,6 +19,11 @@ def dir_dict(obj):
         ret[k] = getattr(obj, k)
     return ret
 
+
+# <codecell>
+
+from functools import partial
+from types import MethodType
 
 class InstancePartial(partial):
     def __get__(self, obj, obj_type):
@@ -50,6 +52,7 @@ class CachedInstancePartial(partial):
             obj.__dict__[name] = ret = MethodType(self, obj, obj_type)
             return ret
 
+# <codecell>
 
 class Greeter(object):
     def __init__(self, greeting):
@@ -68,15 +71,20 @@ class Greeter(object):
 class SubGreeter(Greeter):
     pass
 
+# <codecell>
+
 
 def main():
-    g = SubGreeter('hello')
+    g = Greeter('hello')
     print g.greet()
     print g.native_greet()
     print g.partial_greet()
     print g.cached_partial_greet()
+    
+    sg = SubGreeter('salam')
+    print sg.partial_greet()
+    
     print CachedInstancePartial(g.greet, excitement='s')()
-    import pdb;pdb.set_trace()
 
 
 if __name__ == '__main__':
