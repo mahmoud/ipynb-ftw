@@ -16,6 +16,7 @@ tracks = json.loads(t_json.text)
 
 print tracks[0]
 
+
 #pprint([(track['id'], track['title'], track['playback_count'], track['permalink_url']) for track in tracks])
 
 # <codecell>
