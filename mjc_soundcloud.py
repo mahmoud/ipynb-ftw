@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# <nbformat>2</nbformat>
+# <nbformat>3</nbformat>
 
 # <codecell>
 
@@ -14,7 +14,7 @@ tracks = json.loads(t_json.text)
 
 # <codecell>
 
-print sorted(tracks[0].keys())
+print tracks[0]
 
 #pprint([(track['id'], track['title'], track['playback_count'], track['permalink_url']) for track in tracks])
 
