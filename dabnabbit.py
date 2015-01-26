@@ -17,7 +17,7 @@ import random
 from pyquery import PyQuery as pq
 
 # stupid ipy notebook
-sum = __builtins__['sum']
+#sum = __builtins__['sum']
 
 from collections import namedtuple
 
