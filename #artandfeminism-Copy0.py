@@ -8,7 +8,7 @@ from collections import Counter
 
 # <codecell>
 
-r = requests.get('http://tools.wmflabs.org/hashtags/get/artandfeminism/en/3')
+r = requests.get('http://tools.wmflabs.org/hashtags/get/ArtandFeminism/en/3')
 
 # <codecell>
 
