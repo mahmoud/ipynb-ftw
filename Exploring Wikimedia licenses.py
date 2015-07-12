@@ -21,5 +21,6 @@ licenses_percent[:100]
 
 # <codecell>
 
-len([l for l in license_totals if 'pd' in l[0].lower()])
+print 'Public domain licenses?', len([l for l in license_totals if 'pd-' in l[0].lower()])
+print 'Creative Commons licenses?', len([l for l in license_totals if 'cc-' in l[0].lower()])
 
