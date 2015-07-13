@@ -15,12 +15,31 @@ licenses = json.load(licenses_req)
 # <codecell>
 
 license_totals = sorted([(l, sum(t.values())) for l, t in licenses.items()], key=lambda l: l[1], reverse=True)
+print len([l[0] for l in license_totals])
 total_files = 26674464.0
 licenses_percent = [(l[0], l[1]/total_files * 100) for l in license_totals]
 licenses_percent[:100]
 
 # <codecell>
 
-print 'Public domain licenses?', len([l for l in license_totals if 'pd-' in l[0].lower()])
-print 'Creative Commons licenses?', len([l for l in license_totals if 'cc-' in l[0].lower()])
+def print_license_stats(name, pattern):
+    total_licenses = len([l for l in license_totals if pattern in l[0].lower()])
+    total_licensed_files = sum([l[1] for l in license_totals if pattern in l[0].lower()])
+    percent_total = total_licensed_files/total_files * 100
+    print '%s: %s licenses, %s files (%s of Commons)' % (name,
+                                                          total_licenses,
+                                                          total_licensed_files, 
+                                                          percent_total)
+print_license_stats('Public Domain', 'pd-')
+print_license_stats('Creative Commons', 'cc-')
+print_license_stats('GNU Free Document License', 'gfdl')
+print_license_stats('No known restrictions', 'no_known')
+
+# <codecell>
+
+len([(l[0], l[1]) for l in license_totals if l[1] > 100000])
+
+# <codecell>
+
+[(l[0], l[1], l[1]/total_files * 100) for l in license_totals if 'pd-' not in l[0].lower() and 'cc-' not in l[0].lower() and 'gfdl' not in l[0].lower()][:10]
 
