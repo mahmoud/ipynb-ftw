@@ -198,3 +198,48 @@ def remap(root, visit=default_visit, enter=default_enter, exit=default_exit,
             raise TypeError('expected remappable root, not: %r' % root)
     return value
 
+# <codecell>
+
+github_resp = [{                                                                                                                    
+    "id": "3165090957",                                                                                               
+    "type": "PushEvent",                                                                                              
+    "actor": {                                                                                                        
+      "id": 130193,                                                                                                   
+      "login": "mahmoud",                                                                                             
+      "gravatar_id": "",                                                                                              
+      "url": "https://api.github.com/users/mahmoud",                                                                  
+      "avatar_url": "https://avatars.githubusercontent.com/u/130193?"                                                 
+    },                                                                                                                
+    "repo": {                                                                                                         
+      "id": 8307391,                                                                                                  
+      "name": "mahmoud/boltons",                                                                                      
+      "url": "https://api.github.com/repos/mahmoud/boltons"                                                           
+    },                                                                                                                
+    "payload": {                                                                                                      
+      "push_id": 799258895,                                                                                           
+      "size": 1,                                                                                                      
+      "distinct_size": 1,                                                                                             
+      "ref": "refs/heads/master",                                                                                     
+      "head": "27a4bc1b6d1da25a38fe8e2c5fb27f22308e3260",                                                             
+      "before": "0d6486c40282772bab232bf393c5e6fad9533a0e",                                                           
+      "commits": [                                                                                                    
+        {                                                                                                             
+          "sha": "27a4bc1b6d1da25a38fe8e2c5fb27f22308e3260",                                                          
+          "author": {                                                                                                 
+            "email": "mahmoud@hatnote.com",                                                                           
+            "name": "Mahmoud Hashemi"                                                                                 
+          },                                                                                                          
+          "message": "switched reraise_visit to be just a kwarg",                                                     
+          "distinct": True,                                                                                           
+          "url": "https://api.github.com/repos/mahmoud/boltons/commits/27a4bc1b6d1da25a38fe8e2c5fb27f22308e3260"      
+        }                                                                                                             
+      ]                                                                                                               
+    },                                                                                                                
+    "public": True,                                                                                                   
+    "created_at": "2015-09-21T10:04:37Z"                                                                              
+}]   
+
+# <codecell>
+
+remap(github_resp, lambda p, k, v: (k, int(v)) if k == 'id' else (k, v))
+
